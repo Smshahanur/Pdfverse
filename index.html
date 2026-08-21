@@ -4,17 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>PDFVerse - All Your PDF Tools in One Place</title>
+  <title>PDFVerse - Image to PDF</title>
+
+  <!-- PDF Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <style>
     * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
+      font-family: Arial, sans-serif;
     }
 
     body {
-      font-family: Arial, sans-serif;
       background: #f7f8fc;
       color: #1f2937;
     }
@@ -26,12 +29,10 @@
       justify-content: space-between;
       align-items: center;
       box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-      position: sticky;
-      top: 0;
     }
 
     .logo {
-      font-size: 24px;
+      font-size: 28px;
       font-weight: bold;
       color: #6d4aff;
     }
@@ -40,95 +41,87 @@
       text-decoration: none;
       color: #444;
       margin-left: 20px;
-      font-size: 15px;
-    }
-
-    nav a:hover {
-      color: #6d4aff;
     }
 
     .hero {
       text-align: center;
-      padding: 80px 20px 50px;
+      padding: 70px 20px 40px;
       background: linear-gradient(135deg, #f3f0ff, #ffffff);
     }
 
     .hero h1 {
       font-size: 42px;
-      margin-bottom: 18px;
+      margin-bottom: 15px;
     }
 
     .hero p {
       color: #666;
-      max-width: 600px;
-      margin: auto;
-      line-height: 1.6;
+      font-size: 17px;
+    }
+
+    .converter {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
     }
 
     .upload-box {
-      margin: 30px auto 0;
-      max-width: 550px;
       background: white;
-      border: 2px dashed #6d4aff;
-      border-radius: 15px;
-      padding: 35px;
+      border: 3px dashed #6d4aff;
+      border-radius: 20px;
+      padding: 50px 20px;
+      text-align: center;
+    }
+
+    .upload-box h2 {
+      margin-bottom: 15px;
     }
 
     .upload-btn {
       display: inline-block;
       background: #6d4aff;
       color: white;
-      padding: 14px 25px;
-      border-radius: 8px;
-      text-decoration: none;
-      margin-top: 15px;
+      padding: 15px 28px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 17px;
+      margin-top: 20px;
+    }
+
+    #fileList {
+      margin-top: 25px;
+      text-align: left;
+    }
+
+    .file-item {
+      background: #f3f0ff;
+      margin: 10px 0;
+      padding: 14px;
+      border-radius: 10px;
+      word-break: break-word;
+    }
+
+    #createBtn {
+      display: none;
+      width: 100%;
+      background: #6d4aff;
+      color: white;
+      border: none;
+      padding: 17px;
+      font-size: 18px;
+      border-radius: 10px;
+      margin-top: 25px;
       cursor: pointer;
     }
 
-    .tools {
-      padding: 70px 8%;
+    #createBtn:disabled {
+      background: #999;
     }
 
-    .section-title {
+    #status {
       text-align: center;
-      font-size: 30px;
-      margin-bottom: 40px;
-    }
-
-    .tool-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-    }
-
-    .tool {
-      background: white;
-      padding: 30px 20px;
-      border-radius: 15px;
-      text-align: center;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-      transition: 0.3s;
-      cursor: pointer;
-    }
-
-    .tool:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 10px 30px rgba(109,74,255,0.18);
-    }
-
-    .tool-icon {
-      font-size: 42px;
-      margin-bottom: 15px;
-    }
-
-    .tool h3 {
-      margin-bottom: 10px;
-    }
-
-    .tool p {
-      color: #777;
-      font-size: 14px;
-      line-height: 1.5;
+      margin-top: 20px;
+      font-weight: bold;
     }
 
     footer {
@@ -136,7 +129,7 @@
       color: white;
       text-align: center;
       padding: 25px;
-      margin-top: 40px;
+      margin-top: 70px;
     }
 
     @media (max-width: 600px) {
@@ -150,11 +143,11 @@
 
       nav a {
         margin-left: 10px;
-        font-size: 13px;
+        font-size: 14px;
       }
 
-      .tools {
-        padding: 50px 5%;
+      .converter {
+        padding: 15px;
       }
     }
   </style>
@@ -167,110 +160,253 @@
 
     <nav>
       <a href="#">Home</a>
-      <a href="#tools">Tools</a>
+      <a href="#converter">Tools</a>
       <a href="#about">About</a>
     </nav>
   </header>
 
   <section class="hero">
-    <h1>All Your PDF Tools in One Place</h1>
+    <h1>Image to PDF Converter</h1>
 
     <p>
-      Easily manage, convert, edit and organize your PDF files
-      with simple and powerful tools.
+      Convert one or multiple images into a PDF document quickly and easily.
     </p>
+  </section>
+
+  <section class="converter" id="converter">
 
     <div class="upload-box">
-      <h2>Upload Your PDF</h2>
-      <p>Select a PDF file to get started.</p>
 
-      <input type="file" id="pdfFile" accept=".pdf" hidden>
+      <h2>Select Your Images</h2>
 
-      <label for="pdfFile" class="upload-btn">
-        Choose PDF File
+      <p>Choose JPG, JPEG, or PNG images.</p>
+
+      <input
+        type="file"
+        id="imageInput"
+        accept="image/png,image/jpeg"
+        multiple
+        hidden
+      >
+
+      <label for="imageInput" class="upload-btn">
+        Choose Images
       </label>
 
-      <p id="fileName" style="margin-top:15px;"></p>
-    </div>
-  </section>
+      <div id="fileList"></div>
 
-  <section class="tools" id="tools">
+      <button id="createBtn">
+        Create & Download PDF
+      </button>
 
-    <h2 class="section-title">Popular PDF Tools</h2>
-
-    <div class="tool-grid">
-
-      <div class="tool">
-        <div class="tool-icon">🔗</div>
-        <h3>Merge PDF</h3>
-        <p>Combine multiple PDF files into one document.</p>
-      </div>
-
-      <div class="tool">
-        <div class="tool-icon">✂️</div>
-        <h3>Split PDF</h3>
-        <p>Split a PDF into separate pages or files.</p>
-      </div>
-
-      <div class="tool">
-        <div class="tool-icon">🔄</div>
-        <h3>Rotate PDF</h3>
-        <p>Rotate PDF pages quickly and easily.</p>
-      </div>
-
-      <div class="tool">
-        <div class="tool-icon">🖼️</div>
-        <h3>Image to PDF</h3>
-        <p>Convert your images into a PDF document.</p>
-      </div>
-
-      <div class="tool">
-        <div class="tool-icon">📄</div>
-        <h3>PDF to Image</h3>
-        <p>Convert PDF pages into image files.</p>
-      </div>
-
-      <div class="tool">
-        <div class="tool-icon">🔒</div>
-        <h3>Protect PDF</h3>
-        <p>Add password protection to your PDF files.</p>
-      </div>
-
-      <div class="tool">
-        <div class="tool-icon">🗜️</div>
-        <h3>Compress PDF</h3>
-        <p>Reduce the size of your PDF files.</p>
-      </div>
-
-      <div class="tool">
-        <div class="tool-icon">📑</div>
-        <h3>PDF to Word</h3>
-        <p>Convert PDF documents into editable files.</p>
-      </div>
+      <div id="status"></div>
 
     </div>
 
   </section>
 
-  <section id="about" style="text-align:center; padding:50px 20px;">
+  <section id="about" style="text-align:center;padding:40px 20px;">
     <h2>Simple. Fast. Powerful.</h2>
-    <p style="margin-top:15px; color:#666;">
-      PDFVerse brings your essential PDF tools together in one place.
+
+    <p style="margin-top:15px;color:#666;">
+      PDFVerse helps you convert your images into a PDF document directly in your browser.
     </p>
   </section>
 
   <footer>
-    <p>© 2026 PDFVerse. All rights reserved.</p>
+    © 2026 PDFVerse. All rights reserved.
   </footer>
 
-  <script>
-    document.getElementById("pdfFile").addEventListener("change", function() {
-      const fileName = document.getElementById("fileName");
 
-      if (this.files.length > 0) {
-        fileName.innerText = "Selected: " + this.files[0].name;
+  <script>
+
+    const imageInput = document.getElementById("imageInput");
+    const fileList = document.getElementById("fileList");
+    const createBtn = document.getElementById("createBtn");
+    const status = document.getElementById("status");
+
+    let selectedFiles = [];
+
+    imageInput.addEventListener("change", function () {
+
+      selectedFiles = Array.from(this.files);
+
+      fileList.innerHTML = "";
+
+      if (selectedFiles.length > 0) {
+
+        selectedFiles.forEach(function(file, index) {
+
+          const item = document.createElement("div");
+
+          item.className = "file-item";
+
+          item.innerHTML =
+            (index + 1) + ". " + file.name;
+
+          fileList.appendChild(item);
+
+        });
+
+        createBtn.style.display = "block";
+
+        status.innerHTML =
+          selectedFiles.length + " image(s) selected";
+
       }
+
     });
+
+
+    createBtn.addEventListener("click", async function () {
+
+      if (selectedFiles.length === 0) {
+        return;
+      }
+
+      createBtn.disabled = true;
+
+      createBtn.innerText = "Creating PDF...";
+
+      status.innerHTML = "Please wait...";
+
+      try {
+
+        const { jsPDF } = window.jspdf;
+
+        const pdf = new jsPDF();
+
+        for (let i = 0; i < selectedFiles.length; i++) {
+
+          const file = selectedFiles[i];
+
+          const imageData =
+            await readFile(file);
+
+          const image =
+            await loadImage(imageData);
+
+          const imgWidth =
+            image.width;
+
+          const imgHeight =
+            image.height;
+
+          const pageWidth =
+            pdf.internal.pageSize.getWidth();
+
+          const pageHeight =
+            pdf.internal.pageSize.getHeight();
+
+          let width =
+            pageWidth;
+
+          let height =
+            imgHeight * width / imgWidth;
+
+          if (height > pageHeight) {
+
+            height = pageHeight;
+
+            width =
+              imgWidth * height / imgHeight;
+
+          }
+
+          const x =
+            (pageWidth - width) / 2;
+
+          const y =
+            (pageHeight - height) / 2;
+
+          if (i > 0) {
+            pdf.addPage();
+          }
+
+          let imageType = "JPEG";
+
+          if (file.type === "image/png") {
+            imageType = "PNG";
+          }
+
+          pdf.addImage(
+            imageData,
+            imageType,
+            x,
+            y,
+            width,
+            height
+          );
+
+        }
+
+        pdf.save("PDFVerse-Images.pdf");
+
+        status.innerHTML =
+          "PDF created successfully!";
+
+      }
+
+      catch (error) {
+
+        console.error(error);
+
+        status.innerHTML =
+          "Error creating PDF. Please try again.";
+
+      }
+
+      createBtn.disabled = false;
+
+      createBtn.innerText =
+        "Create & Download PDF";
+
+    });
+
+
+    function readFile(file) {
+
+      return new Promise(function(resolve, reject) {
+
+        const reader = new FileReader();
+
+        reader.onload =
+          function(event) {
+
+            resolve(event.target.result);
+
+          };
+
+        reader.onerror = reject;
+
+        reader.readAsDataURL(file);
+
+      });
+
+    }
+
+
+    function loadImage(src) {
+
+      return new Promise(function(resolve, reject) {
+
+        const image = new Image();
+
+        image.onload =
+          function() {
+
+            resolve(image);
+
+          };
+
+        image.onerror = reject;
+
+        image.src = src;
+
+      });
+
+    }
+
   </script>
 
 </body>
