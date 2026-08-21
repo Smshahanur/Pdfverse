@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PDFVerse - All Your PDF Tools</title>
+<title>PDFVerse by Shahanur Mollah - All Your PDF Tools</title>
 <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
@@ -49,8 +49,24 @@ window.imagesToPDF=async function(){const files=document.getElementById("imageFi
 window.pdfToImages=async function(){const file=getFile("pdfImageFile");if(!file){setStatus("Please select a PDF.");return}const format=document.getElementById("imageFormat").value,mode=document.getElementById("downloadMode").value;try{setStatus("Loading PDF...");const pdf=await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise,base=file.name.replace(/\.pdf$/i,""),zip=mode==="zip"?new JSZip():null;for(let n=1;n<=pdf.numPages;n++){setStatus(`Converting page ${n} of ${pdf.numPages}`);const page=await pdf.getPage(n),viewport=page.getViewport({scale:2}),canvas=document.createElement("canvas"),context=canvas.getContext("2d");canvas.width=Math.floor(viewport.width);canvas.height=Math.floor(viewport.height);if(format==="jpg"){context.fillStyle="#ffffff";context.fillRect(0,0,canvas.width,canvas.height)}await page.render({canvasContext:context,viewport}).promise;const mime=format==="jpg"?"image/jpeg":"image/png",blob=await new Promise(resolve=>canvas.toBlob(resolve,mime,format==="jpg"?0.95:undefined));if(!blob)throw new Error("Could not create image.");const name=`${base}-page-${n}.${format}`;if(mode==="zip")zip.file(name,blob);else{downloadFile(blob,name,mime);await new Promise(r=>setTimeout(r,500))}}if(mode==="zip"){setStatus("Creating ZIP file...");downloadFile(await zip.generateAsync({type:"blob",compression:"DEFLATE",compressionOptions:{level:6}}),`${base}-${format}-images.zip`,"application/zip")}await pdf.destroy();setStatus(mode==="zip"?"Done! ZIP downloaded successfully.":"Done! Images downloaded successfully.")}catch(error){console.error(error);setStatus("Error: "+error.message)}};
 window.addPageNumbers=async function(){const file=getFile("numberFile"),position=document.getElementById("numberPosition").value;if(!file){setStatus("Please select a PDF.");return}try{setStatus("Adding page numbers...");const pdf=await PDFLib.PDFDocument.load(await file.arrayBuffer()),font=await pdf.embedFont(PDFLib.StandardFonts.Helvetica),size=14,margin=30;pdf.getPages().forEach((page,index)=>{const text=String(index+1),{width,height}=page.getSize(),tw=font.widthOfTextAtSize(text,size);let x=(width-tw)/2,y=margin;if(position==="bottom-left"){x=margin;y=margin}if(position==="bottom-right"){x=width-tw-margin;y=margin}if(position==="top-center"){x=(width-tw)/2;y=height-margin}if(position==="top-left"){x=margin;y=height-margin}if(position==="top-right"){x=width-tw-margin;y=height-margin}page.drawText(text,{x,y,size,font,color:PDFLib.rgb(0,0,0)})});downloadFile(await pdf.save(),"numbered.pdf","application/pdf");setStatus("Page numbers added!")}catch(error){console.error(error);setStatus("Error adding page numbers.")}};
 window.checkPDFPassword=async function(){const file=getFile("passwordFile"),password=document.getElementById("pdfPassword").value;if(!file){setStatus("Please select a PDF.");return}if(!password){setStatus("Enter the PDF password.");return}try{setStatus("Checking password...");const pdf=await pdfjsLib.getDocument({data:await file.arrayBuffer(),password}).promise;setStatus(`PDF opened successfully! ${pdf.numPages} pages detected.`);await pdf.destroy()}catch(error){console.error(error);setStatus("Incorrect password or unsupported PDF.")}};
-document.getElementById("quickPDF").addEventListener("change",function(){if(this.files&&this.files.length){quickSelectedFile=this.files[0];document.getElementById("quickFileInfo").innerText="Selected: "+quickSelectedFile.name;document.getElementById("tools").scrollIntoView({behavior:"smooth"})}});
-window.addEventListener("click",function(event){const modal=document.getElementById("modal");if(event.target===modal)closeTool()});
+document.getElementById("quickPDF").addEventListener("change", function () {
+
+    const file = this.files[0];
+
+    if (!file) return;
+
+    if (!file.name.toLowerCase().endsWith(".pdf")) {
+        alert("Please select a valid PDF file.");
+        this.value = "";
+        return;
+    }
+
+    document.getElementById("tools").scrollIntoView({
+        behavior: "smooth"
+    });
+
+});
+
 </script>
 </body>
 </html>
