@@ -3,126 +3,158 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>PDFVerse - All Your PDF Tools in One Place</title>
+
   <style>
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: Arial, sans-serif;
+      box-sizing: border-box;
     }
 
     body {
+      font-family: Arial, sans-serif;
       background: #f7f8fc;
       color: #1f2937;
     }
 
     header {
       background: white;
-      border-bottom: 1px solid #e5e7eb;
       padding: 18px 8%;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      position: sticky;
+      top: 0;
     }
 
     .logo {
-      font-size: 28px;
+      font-size: 24px;
       font-weight: bold;
-      color: #6c3bff;
+      color: #6d4aff;
     }
 
     nav a {
       text-decoration: none;
-      color: #374151;
+      color: #444;
       margin-left: 20px;
-      font-weight: 500;
+      font-size: 15px;
+    }
+
+    nav a:hover {
+      color: #6d4aff;
     }
 
     .hero {
       text-align: center;
       padding: 80px 20px 50px;
+      background: linear-gradient(135deg, #f3f0ff, #ffffff);
     }
 
     .hero h1 {
-      font-size: 48px;
-      margin-bottom: 15px;
+      font-size: 42px;
+      margin-bottom: 18px;
     }
 
     .hero p {
-      font-size: 18px;
-      color: #6b7280;
+      color: #666;
       max-width: 600px;
       margin: auto;
       line-height: 1.6;
     }
 
-    .tools {
-      max-width: 1100px;
-      margin: 20px auto 70px;
-      padding: 0 20px;
+    .upload-box {
+      margin: 30px auto 0;
+      max-width: 550px;
+      background: white;
+      border: 2px dashed #6d4aff;
+      border-radius: 15px;
+      padding: 35px;
     }
 
-    .tools h2 {
+    .upload-btn {
+      display: inline-block;
+      background: #6d4aff;
+      color: white;
+      padding: 14px 25px;
+      border-radius: 8px;
+      text-decoration: none;
+      margin-top: 15px;
+      cursor: pointer;
+    }
+
+    .tools {
+      padding: 70px 8%;
+    }
+
+    .section-title {
       text-align: center;
       font-size: 30px;
-      margin-bottom: 35px;
+      margin-bottom: 40px;
     }
 
-    .grid {
+    .tool-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 20px;
     }
 
-    .tool-card {
+    .tool {
       background: white;
       padding: 30px 20px;
       border-radius: 15px;
-      border: 1px solid #e5e7eb;
       text-align: center;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+      transition: 0.3s;
       cursor: pointer;
-      transition: 0.2s;
     }
 
-    .tool-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+    .tool:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 10px 30px rgba(109,74,255,0.18);
     }
 
-    .icon {
+    .tool-icon {
       font-size: 42px;
       margin-bottom: 15px;
     }
 
-    .tool-card h3 {
+    .tool h3 {
       margin-bottom: 10px;
     }
 
-    .tool-card p {
-      color: #6b7280;
+    .tool p {
+      color: #777;
       font-size: 14px;
+      line-height: 1.5;
     }
 
     footer {
+      background: #1f2937;
+      color: white;
       text-align: center;
       padding: 25px;
-      background: white;
-      border-top: 1px solid #e5e7eb;
-      color: #6b7280;
+      margin-top: 40px;
     }
 
     @media (max-width: 600px) {
       header {
-        padding: 15px 20px;
-      }
-
-      nav {
-        display: none;
+        padding: 15px 5%;
       }
 
       .hero h1 {
-        font-size: 34px;
+        font-size: 32px;
+      }
+
+      nav a {
+        margin-left: 10px;
+        font-size: 13px;
+      }
+
+      .tools {
+        padding: 50px 5%;
       }
     }
   </style>
@@ -130,69 +162,116 @@
 
 <body>
 
-<header>
-  <div class="logo">PDFVerse</div>
-  <nav>
-    <a href="#">Home</a>
-    <a href="#tools">Tools</a>
-    <a href="#">About</a>
-  </nav>
-</header>
+  <header>
+    <div class="logo">PDFVerse</div>
 
-<section class="hero">
-  <h1>All Your PDF Tools in One Place</h1>
-  <p>
-    Easily manage, convert, edit and organize your PDF files with simple and powerful tools.
-  </p>
-</section>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#tools">Tools</a>
+      <a href="#about">About</a>
+    </nav>
+  </header>
 
-<section class="tools" id="tools">
-  <h2>Popular PDF Tools</h2>
+  <section class="hero">
+    <h1>All Your PDF Tools in One Place</h1>
 
-  <div class="grid">
+    <p>
+      Easily manage, convert, edit and organize your PDF files
+      with simple and powerful tools.
+    </p>
 
-    <div class="tool-card">
-      <div class="icon">🔗</div>
-      <h3>Merge PDF</h3>
-      <p>Combine multiple PDF files into one document.</p>
+    <div class="upload-box">
+      <h2>Upload Your PDF</h2>
+      <p>Select a PDF file to get started.</p>
+
+      <input type="file" id="pdfFile" accept=".pdf" hidden>
+
+      <label for="pdfFile" class="upload-btn">
+        Choose PDF File
+      </label>
+
+      <p id="fileName" style="margin-top:15px;"></p>
+    </div>
+  </section>
+
+  <section class="tools" id="tools">
+
+    <h2 class="section-title">Popular PDF Tools</h2>
+
+    <div class="tool-grid">
+
+      <div class="tool">
+        <div class="tool-icon">🔗</div>
+        <h3>Merge PDF</h3>
+        <p>Combine multiple PDF files into one document.</p>
+      </div>
+
+      <div class="tool">
+        <div class="tool-icon">✂️</div>
+        <h3>Split PDF</h3>
+        <p>Split a PDF into separate pages or files.</p>
+      </div>
+
+      <div class="tool">
+        <div class="tool-icon">🔄</div>
+        <h3>Rotate PDF</h3>
+        <p>Rotate PDF pages quickly and easily.</p>
+      </div>
+
+      <div class="tool">
+        <div class="tool-icon">🖼️</div>
+        <h3>Image to PDF</h3>
+        <p>Convert your images into a PDF document.</p>
+      </div>
+
+      <div class="tool">
+        <div class="tool-icon">📄</div>
+        <h3>PDF to Image</h3>
+        <p>Convert PDF pages into image files.</p>
+      </div>
+
+      <div class="tool">
+        <div class="tool-icon">🔒</div>
+        <h3>Protect PDF</h3>
+        <p>Add password protection to your PDF files.</p>
+      </div>
+
+      <div class="tool">
+        <div class="tool-icon">🗜️</div>
+        <h3>Compress PDF</h3>
+        <p>Reduce the size of your PDF files.</p>
+      </div>
+
+      <div class="tool">
+        <div class="tool-icon">📑</div>
+        <h3>PDF to Word</h3>
+        <p>Convert PDF documents into editable files.</p>
+      </div>
+
     </div>
 
-    <div class="tool-card">
-      <div class="icon">✂️</div>
-      <h3>Split PDF</h3>
-      <p>Split a PDF into separate pages or files.</p>
-    </div>
+  </section>
 
-    <div class="tool-card">
-      <div class="icon">🔄</div>
-      <h3>Rotate PDF</h3>
-      <p>Rotate PDF pages quickly and easily.</p>
-    </div>
+  <section id="about" style="text-align:center; padding:50px 20px;">
+    <h2>Simple. Fast. Powerful.</h2>
+    <p style="margin-top:15px; color:#666;">
+      PDFVerse brings your essential PDF tools together in one place.
+    </p>
+  </section>
 
-    <div class="tool-card">
-      <div class="icon">🖼️</div>
-      <h3>Image to PDF</h3>
-      <p>Convert your images into a PDF document.</p>
-    </div>
+  <footer>
+    <p>© 2026 PDFVerse. All rights reserved.</p>
+  </footer>
 
-    <div class="tool-card">
-      <div class="icon">📄</div>
-      <h3>PDF to Image</h3>
-      <p>Convert PDF pages into image files.</p>
-    </div>
+  <script>
+    document.getElementById("pdfFile").addEventListener("change", function() {
+      const fileName = document.getElementById("fileName");
 
-    <div class="tool-card">
-      <div class="icon">🔒</div>
-      <h3>Protect PDF</h3>
-      <p>Add password protection to your PDF.</p>
-    </div>
-
-  </div>
-</section>
-
-<footer>
-  © 2026 PDFVerse. All Your PDF Tools in One Place.
-</footer>
+      if (this.files.length > 0) {
+        fileName.innerText = "Selected: " + this.files[0].name;
+      }
+    });
+  </script>
 
 </body>
 </html>
