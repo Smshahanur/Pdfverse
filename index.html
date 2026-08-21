@@ -4,10 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>PDFVerse - Image to PDF</title>
+  <title>PDFVerse - Free PDF Tools</title>
 
-  <!-- PDF Library -->
+  <!-- Free libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 
   <style>
     * {
@@ -59,68 +60,125 @@
       font-size: 17px;
     }
 
-    .converter {
-      max-width: 800px;
-      margin: 40px auto;
-      padding: 20px;
-    }
-
-    .upload-box {
-      background: white;
-      border: 3px dashed #6d4aff;
-      border-radius: 20px;
+    .tools {
+      max-width: 1000px;
+      margin: auto;
       padding: 50px 20px;
-      text-align: center;
     }
 
-    .upload-box h2 {
+    .tools h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 30px;
+    }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .tool {
+      background: white;
+      padding: 30px 20px;
+      border-radius: 18px;
+      text-align: center;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .tool:hover {
+      transform: translateY(-5px);
+    }
+
+    .tool-icon {
+      font-size: 45px;
       margin-bottom: 15px;
+    }
+
+    .tool p {
+      color: #777;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    .pdf-modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .modal-content {
+      background: white;
+      max-width: 650px;
+      margin: 50px auto;
+      padding: 35px 25px;
+      border-radius: 20px;
+      text-align: center;
+      position: relative;
+    }
+
+    .close-btn {
+      position: absolute;
+      right: 20px;
+      top: 10px;
+      border: none;
+      background: none;
+      font-size: 35px;
+      cursor: pointer;
     }
 
     .upload-btn {
       display: inline-block;
       background: #6d4aff;
       color: white;
-      padding: 15px 28px;
+      padding: 15px 25px;
       border-radius: 10px;
-      cursor: pointer;
-      font-size: 17px;
       margin-top: 20px;
+      cursor: pointer;
+      font-size: 16px;
     }
 
-    #fileList {
-      margin-top: 25px;
+    .upload-btn input {
+      display: none;
+    }
+
+    .file-list {
+      margin-top: 20px;
       text-align: left;
     }
 
     .file-item {
       background: #f3f0ff;
-      margin: 10px 0;
-      padding: 14px;
-      border-radius: 10px;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 8px;
       word-break: break-word;
     }
 
-    #createBtn {
-      display: none;
+    .action-btn {
       width: 100%;
       background: #6d4aff;
       color: white;
       border: none;
-      padding: 17px;
-      font-size: 18px;
+      padding: 16px;
       border-radius: 10px;
-      margin-top: 25px;
+      font-size: 17px;
+      margin-top: 20px;
       cursor: pointer;
     }
 
-    #createBtn:disabled {
+    .action-btn:disabled {
       background: #999;
     }
 
-    #status {
-      text-align: center;
-      margin-top: 20px;
+    .status {
+      margin-top: 15px;
       font-weight: bold;
     }
 
@@ -129,7 +187,6 @@
       color: white;
       text-align: center;
       padding: 25px;
-      margin-top: 70px;
     }
 
     @media (max-width: 600px) {
@@ -146,8 +203,8 @@
         font-size: 14px;
       }
 
-      .converter {
-        padding: 15px;
+      .modal-content {
+        margin: 20px auto;
       }
     }
   </style>
@@ -155,242 +212,497 @@
 
 <body>
 
-  <header>
-    <div class="logo">PDFVerse</div>
+<header>
+  <div class="logo">PDFVerse</div>
 
-    <nav>
-      <a href="#">Home</a>
-      <a href="#converter">Tools</a>
-      <a href="#about">About</a>
-    </nav>
-  </header>
+  <nav>
+    <a href="#">Home</a>
+    <a href="#tools">Tools</a>
+  </nav>
+</header>
 
-  <section class="hero">
-    <h1>Image to PDF Converter</h1>
+<section class="hero">
+  <h1>All Your PDF Tools in One Place</h1>
+  <p>Fast, simple and free PDF tools that work directly in your browser.</p>
+</section>
 
-    <p>
-      Convert one or multiple images into a PDF document quickly and easily.
-    </p>
-  </section>
+<section class="tools" id="tools">
 
-  <section class="converter" id="converter">
+  <h2>PDF Tools</h2>
 
-    <div class="upload-box">
+  <div class="tool-grid">
 
-      <h2>Select Your Images</h2>
-
-      <p>Choose JPG, JPEG, or PNG images.</p>
-
-      <input
-        type="file"
-        id="imageInput"
-        accept="image/png,image/jpeg"
-        multiple
-        hidden
-      >
-
-      <label for="imageInput" class="upload-btn">
-        Choose Images
-      </label>
-
-      <div id="fileList"></div>
-
-      <button id="createBtn">
-        Create & Download PDF
-      </button>
-
-      <div id="status"></div>
-
+    <div class="tool" onclick="openMerge()">
+      <div class="tool-icon">🔗</div>
+      <h3>Merge PDF</h3>
+      <p>Combine multiple PDF files into one PDF.</p>
     </div>
 
-  </section>
+    <div class="tool" onclick="openImageToPDF()">
+      <div class="tool-icon">🖼️</div>
+      <h3>Image to PDF</h3>
+      <p>Convert one or multiple images into a PDF.</p>
+    </div>
 
-  <section id="about" style="text-align:center;padding:40px 20px;">
-    <h2>Simple. Fast. Powerful.</h2>
+  </div>
 
-    <p style="margin-top:15px;color:#666;">
-      PDFVerse helps you convert your images into a PDF document directly in your browser.
-    </p>
-  </section>
-
-  <footer>
-    © 2026 PDFVerse. All rights reserved.
-  </footer>
+</section>
 
 
-  <script>
+<!-- MERGE PDF -->
+<div id="mergeModal" class="pdf-modal">
 
-    const imageInput = document.getElementById("imageInput");
-    const fileList = document.getElementById("fileList");
-    const createBtn = document.getElementById("createBtn");
-    const status = document.getElementById("status");
+  <div class="modal-content">
 
-    let selectedFiles = [];
+    <button class="close-btn" onclick="closeMerge()">×</button>
 
-    imageInput.addEventListener("change", function () {
+    <h2>Merge PDF</h2>
 
-      selectedFiles = Array.from(this.files);
+    <p>Select two or more PDF files.</p>
 
-      fileList.innerHTML = "";
+    <label class="upload-btn">
+      Select PDF Files
+      <input
+        type="file"
+        id="mergeFiles"
+        accept="application/pdf"
+        multiple
+      >
+    </label>
 
-      if (selectedFiles.length > 0) {
+    <div id="mergeFileList" class="file-list"></div>
 
-        selectedFiles.forEach(function(file, index) {
+    <button
+      id="mergeBtn"
+      class="action-btn"
+      style="display:none;"
+    >
+      Merge & Download PDF
+    </button>
 
-          const item = document.createElement("div");
+    <div id="mergeStatus" class="status"></div>
 
-          item.className = "file-item";
+  </div>
 
-          item.innerHTML =
-            (index + 1) + ". " + file.name;
+</div>
 
-          fileList.appendChild(item);
 
-        });
+<!-- IMAGE TO PDF -->
+<div id="imageModal" class="pdf-modal">
 
-        createBtn.style.display = "block";
+  <div class="modal-content">
 
-        status.innerHTML =
-          selectedFiles.length + " image(s) selected";
+    <button class="close-btn" onclick="closeImageToPDF()">×</button>
 
-      }
+    <h2>Image to PDF</h2>
+
+    <p>Select one or multiple JPG or PNG images.</p>
+
+    <label class="upload-btn">
+      Select Images
+      <input
+        type="file"
+        id="imageFiles"
+        accept="image/jpeg,image/png"
+        multiple
+      >
+    </label>
+
+    <div id="imageFileList" class="file-list"></div>
+
+    <button
+      id="imageBtn"
+      class="action-btn"
+      style="display:none;"
+    >
+      Create & Download PDF
+    </button>
+
+    <div id="imageStatus" class="status"></div>
+
+  </div>
+
+</div>
+
+
+<footer>
+  © 2026 PDFVerse. All rights reserved.
+</footer>
+
+
+<script>
+
+  /* OPEN AND CLOSE MODALS */
+
+  function openMerge() {
+    document.getElementById("mergeModal").style.display = "block";
+  }
+
+  function closeMerge() {
+    document.getElementById("mergeModal").style.display = "none";
+  }
+
+  function openImageToPDF() {
+    document.getElementById("imageModal").style.display = "block";
+  }
+
+  function closeImageToPDF() {
+    document.getElementById("imageModal").style.display = "none";
+  }
+
+
+  /* MERGE PDF */
+
+  const mergeFilesInput =
+    document.getElementById("mergeFiles");
+
+  const mergeFileList =
+    document.getElementById("mergeFileList");
+
+  const mergeBtn =
+    document.getElementById("mergeBtn");
+
+  const mergeStatus =
+    document.getElementById("mergeStatus");
+
+
+  mergeFilesInput.addEventListener("change", function () {
+
+    mergeFileList.innerHTML = "";
+
+    const files =
+      Array.from(this.files);
+
+    if (files.length < 2) {
+
+      mergeFileList.innerHTML =
+        "<p>Please select at least 2 PDF files.</p>";
+
+      mergeBtn.style.display =
+        "none";
+
+      return;
+    }
+
+    files.forEach(function(file, index) {
+
+      const item =
+        document.createElement("div");
+
+      item.className =
+        "file-item";
+
+      item.innerHTML =
+        "📄 " +
+        (index + 1) +
+        ". " +
+        file.name;
+
+      mergeFileList.appendChild(item);
 
     });
 
+    mergeBtn.style.display =
+      "block";
 
-    createBtn.addEventListener("click", async function () {
+  });
 
-      if (selectedFiles.length === 0) {
-        return;
+
+  mergeBtn.addEventListener("click", async function () {
+
+    const files =
+      Array.from(mergeFilesInput.files);
+
+    try {
+
+      mergeBtn.disabled =
+        true;
+
+      mergeBtn.innerText =
+        "Merging PDFs...";
+
+      mergeStatus.innerText =
+        "Please wait...";
+
+      const mergedPdf =
+        await PDFLib.PDFDocument.create();
+
+      for (const file of files) {
+
+        const arrayBuffer =
+          await file.arrayBuffer();
+
+        const pdf =
+          await PDFLib.PDFDocument.load(
+            arrayBuffer
+          );
+
+        const pages =
+          await mergedPdf.copyPages(
+            pdf,
+            pdf.getPageIndices()
+          );
+
+        pages.forEach(function(page) {
+          mergedPdf.addPage(page);
+        });
+
       }
 
-      createBtn.disabled = true;
+      const pdfBytes =
+        await mergedPdf.save();
 
-      createBtn.innerText = "Creating PDF...";
+      const blob =
+        new Blob(
+          [pdfBytes],
+          {
+            type: "application/pdf"
+          }
+        );
 
-      status.innerHTML = "Please wait...";
+      const url =
+        URL.createObjectURL(blob);
 
-      try {
+      const link =
+        document.createElement("a");
 
-        const { jsPDF } = window.jspdf;
+      link.href =
+        url;
 
-        const pdf = new jsPDF();
+      link.download =
+        "PDFVerse-Merged.pdf";
 
-        for (let i = 0; i < selectedFiles.length; i++) {
+      document.body.appendChild(link);
 
-          const file = selectedFiles[i];
+      link.click();
 
-          const imageData =
-            await readFile(file);
+      link.remove();
 
-          const image =
-            await loadImage(imageData);
+      URL.revokeObjectURL(url);
 
-          const imgWidth =
-            image.width;
+      mergeStatus.innerText =
+        "PDF merged successfully!";
 
-          const imgHeight =
+    }
+
+    catch (error) {
+
+      console.error(error);
+
+      mergeStatus.innerText =
+        "Error! Please try again.";
+
+    }
+
+    mergeBtn.disabled =
+      false;
+
+    mergeBtn.innerText =
+      "Merge & Download PDF";
+
+  });
+
+
+  /* IMAGE TO PDF */
+
+  const imageFilesInput =
+    document.getElementById("imageFiles");
+
+  const imageFileList =
+    document.getElementById("imageFileList");
+
+  const imageBtn =
+    document.getElementById("imageBtn");
+
+  const imageStatus =
+    document.getElementById("imageStatus");
+
+
+  imageFilesInput.addEventListener("change", function () {
+
+    imageFileList.innerHTML =
+      "";
+
+    const files =
+      Array.from(this.files);
+
+    files.forEach(function(file, index) {
+
+      const item =
+        document.createElement("div");
+
+      item.className =
+        "file-item";
+
+      item.innerHTML =
+        "🖼️ " +
+        (index + 1) +
+        ". " +
+        file.name;
+
+      imageFileList.appendChild(item);
+
+    });
+
+    if (files.length > 0) {
+
+      imageBtn.style.display =
+        "block";
+
+    }
+
+  });
+
+
+  imageBtn.addEventListener("click", async function () {
+
+    const files =
+      Array.from(imageFilesInput.files);
+
+    try {
+
+      imageBtn.disabled =
+        true;
+
+      imageBtn.innerText =
+        "Creating PDF...";
+
+      imageStatus.innerText =
+        "Please wait...";
+
+      const { jsPDF } =
+        window.jspdf;
+
+      const pdf =
+        new jsPDF();
+
+      for (let i = 0; i < files.length; i++) {
+
+        const imageData =
+          await readFile(files[i]);
+
+        const image =
+          await loadImage(imageData);
+
+        const pageWidth =
+          pdf.internal.pageSize.getWidth();
+
+        const pageHeight =
+          pdf.internal.pageSize.getHeight();
+
+        let width =
+          pageWidth;
+
+        let height =
+          image.height *
+          width /
+          image.width;
+
+        if (height > pageHeight) {
+
+          height =
+            pageHeight;
+
+          width =
+            image.width *
+            height /
             image.height;
-
-          const pageWidth =
-            pdf.internal.pageSize.getWidth();
-
-          const pageHeight =
-            pdf.internal.pageSize.getHeight();
-
-          let width =
-            pageWidth;
-
-          let height =
-            imgHeight * width / imgWidth;
-
-          if (height > pageHeight) {
-
-            height = pageHeight;
-
-            width =
-              imgWidth * height / imgHeight;
-
-          }
-
-          const x =
-            (pageWidth - width) / 2;
-
-          const y =
-            (pageHeight - height) / 2;
-
-          if (i > 0) {
-            pdf.addPage();
-          }
-
-          let imageType = "JPEG";
-
-          if (file.type === "image/png") {
-            imageType = "PNG";
-          }
-
-          pdf.addImage(
-            imageData,
-            imageType,
-            x,
-            y,
-            width,
-            height
-          );
 
         }
 
-        pdf.save("PDFVerse-Images.pdf");
+        const x =
+          (pageWidth - width) / 2;
 
-        status.innerHTML =
-          "PDF created successfully!";
+        const y =
+          (pageHeight - height) / 2;
+
+        if (i > 0) {
+
+          pdf.addPage();
+
+        }
+
+        const type =
+          files[i].type ===
+          "image/png"
+            ? "PNG"
+            : "JPEG";
+
+        pdf.addImage(
+          imageData,
+          type,
+          x,
+          y,
+          width,
+          height
+        );
 
       }
 
-      catch (error) {
+      pdf.save(
+        "PDFVerse-Images.pdf"
+      );
 
-        console.error(error);
+      imageStatus.innerText =
+        "PDF created successfully!";
 
-        status.innerHTML =
-          "Error creating PDF. Please try again.";
+    }
 
-      }
+    catch (error) {
 
-      createBtn.disabled = false;
+      console.error(error);
 
-      createBtn.innerText =
-        "Create & Download PDF";
+      imageStatus.innerText =
+        "Error! Please try again.";
 
-    });
+    }
+
+    imageBtn.disabled =
+      false;
+
+    imageBtn.innerText =
+      "Create & Download PDF";
+
+  });
 
 
-    function readFile(file) {
+  function readFile(file) {
 
-      return new Promise(function(resolve, reject) {
+    return new Promise(
+      function(resolve, reject) {
 
-        const reader = new FileReader();
+        const reader =
+          new FileReader();
 
         reader.onload =
           function(event) {
 
-            resolve(event.target.result);
+            resolve(
+              event.target.result
+            );
 
           };
 
-        reader.onerror = reject;
+        reader.onerror =
+          reject;
 
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(
+          file
+        );
 
-      });
+      }
+    );
 
-    }
+  }
 
 
-    function loadImage(src) {
+  function loadImage(src) {
 
-      return new Promise(function(resolve, reject) {
+    return new Promise(
+      function(resolve, reject) {
 
-        const image = new Image();
+        const image =
+          new Image();
 
         image.onload =
           function() {
@@ -399,15 +711,18 @@
 
           };
 
-        image.onerror = reject;
+        image.onerror =
+          reject;
 
-        image.src = src;
+        image.src =
+          src;
 
-      });
+      }
+    );
 
-    }
+  }
 
-  </script>
+</script>
 
 </body>
 </html>
