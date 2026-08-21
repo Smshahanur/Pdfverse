@@ -4,372 +4,404 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>PDFVerse - Free PDF Tools</title>
+<title>PDFVerse - All Your PDF Tools in One Place</title>
 
-<!-- Libraries -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs" type="module"></script>
+
 <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
-
-*{
-box-sizing:border-box;
-margin:0;
-padding:0;
-font-family:Arial,sans-serif;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-body{
-background:#f6f7fb;
-color:#1f2937;
+html {
+    scroll-behavior: smooth;
 }
 
-header{
-background:#ffffff;
-padding:18px 7%;
-display:flex;
-justify-content:space-between;
-align-items:center;
-box-shadow:0 2px 10px rgba(0,0,0,.08);
-position:sticky;
-top:0;
-z-index:100;
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f6fc;
+    color: #1f2937;
 }
 
-.logo{
-font-size:28px;
-font-weight:bold;
-color:#6d4aff;
+header {
+    background: white;
+    padding: 18px 35px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
 }
 
-nav a{
-text-decoration:none;
-color:#444;
-margin-left:20px;
+.logo {
+    font-size: 30px;
+    font-weight: bold;
+    color: #6d4aff;
 }
 
-.hero{
-text-align:center;
-padding:70px 20px;
-background:linear-gradient(135deg,#eee9ff,#ffffff);
+nav a {
+    text-decoration: none;
+    color: #444;
+    margin-left: 25px;
+    font-size: 16px;
 }
 
-.hero h1{
-font-size:42px;
-margin-bottom:15px;
+nav a:hover {
+    color: #6d4aff;
 }
 
-.hero p{
-color:#666;
-font-size:17px;
+.hero {
+    text-align: center;
+    padding: 80px 20px 55px;
+    background: linear-gradient(135deg, #f3f0ff, #ffffff);
 }
 
-.tools{
-max-width:1150px;
-margin:auto;
-padding:55px 20px;
+.hero h1 {
+    font-size: 42px;
+    margin-bottom: 20px;
 }
 
-.section-title{
-text-align:center;
-font-size:30px;
-margin-bottom:35px;
+.hero p {
+    color: #666;
+    font-size: 20px;
+    max-width: 650px;
+    margin: auto;
+    line-height: 1.6;
 }
 
-.tool-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:20px;
+.upload-box {
+    max-width: 550px;
+    margin: 35px auto 0;
+    padding: 35px;
+    border: 3px dashed #7b61ff;
+    border-radius: 25px;
+    background: white;
 }
 
-.tool{
-background:#fff;
-padding:30px 20px;
-border-radius:18px;
-text-align:center;
-box-shadow:0 5px 20px rgba(0,0,0,.08);
-cursor:pointer;
-transition:.25s;
+.upload-box h2 {
+    margin-bottom: 10px;
 }
 
-.tool:hover{
-transform:translateY(-5px);
-box-shadow:0 12px 30px rgba(0,0,0,.12);
+.upload-box p {
+    font-size: 16px;
 }
 
-.tool-icon{
-font-size:45px;
-margin-bottom:15px;
+.primary-btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #6d4aff, #5436d8);
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
 }
 
-.tool p{
-color:#777;
-font-size:14px;
-margin-top:10px;
+.primary-btn:hover {
+    transform: scale(1.03);
 }
 
-.pdf-modal{
-display:none;
-position:fixed;
-z-index:9999;
-inset:0;
-background:rgba(0,0,0,.65);
-padding:20px;
-overflow-y:auto;
+.tools-section {
+    padding: 70px 25px;
+    max-width: 1200px;
+    margin: auto;
 }
 
-.modal-content{
-background:#fff;
-max-width:650px;
-margin:40px auto;
-padding:35px 25px;
-border-radius:20px;
-text-align:center;
-position:relative;
+.tools-section h2 {
+    text-align: center;
+    font-size: 38px;
+    margin-bottom: 45px;
 }
 
-.close-btn{
-position:absolute;
-right:18px;
-top:8px;
-border:none;
-background:none;
-font-size:35px;
-cursor:pointer;
+.tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 25px;
 }
 
-.upload-btn{
-display:inline-block;
-background:#6d4aff;
-color:#fff;
-padding:15px 25px;
-border-radius:10px;
-margin-top:20px;
-cursor:pointer;
+.tool-card {
+    background: white;
+    border-radius: 25px;
+    padding: 35px 20px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    transition: 0.25s;
 }
 
-.upload-btn input{
-display:none;
+.tool-card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 15px 35px rgba(109,74,255,0.2);
 }
 
-.file-list{
-margin-top:20px;
-text-align:left;
+.tool-icon {
+    font-size: 55px;
+    margin-bottom: 18px;
 }
 
-.file-item{
-background:#f0edff;
-padding:12px;
-margin:8px 0;
-border-radius:8px;
-word-break:break-word;
+.tool-card h3 {
+    font-size: 25px;
+    margin-bottom: 12px;
 }
 
-.action-btn{
-width:100%;
-background:#6d4aff;
-color:#fff;
-border:none;
-padding:16px;
-border-radius:10px;
-font-size:17px;
-margin-top:20px;
-cursor:pointer;
+.tool-card p {
+    color: #666;
+    line-height: 1.5;
 }
 
-.action-btn:disabled{
-background:#999;
+footer {
+    text-align: center;
+    padding: 30px;
+    background: #1f2937;
+    color: white;
+    margin-top: 50px;
 }
 
-.status{
-margin-top:15px;
-font-weight:bold;
+/* MODAL */
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 5000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.65);
+    overflow-y: auto;
+    padding: 25px 15px;
 }
 
-.option-input{
-width:100%;
-padding:13px;
-border:1px solid #ddd;
-border-radius:8px;
-margin-top:15px;
-font-size:16px;
-background:white;
+.modal-box {
+    background: white;
+    max-width: 550px;
+    margin: 50px auto;
+    padding: 30px;
+    border-radius: 25px;
+    position: relative;
 }
 
-footer{
-background:#1f2937;
-color:#fff;
-text-align:center;
-padding:25px;
-margin-top:30px;
+.close {
+    position: absolute;
+    right: 20px;
+    top: 12px;
+    font-size: 38px;
+    cursor: pointer;
 }
 
-@media(max-width:600px){
-
-header{
-padding:15px 5%;
+.modal-box h2 {
+    margin-bottom: 20px;
+    padding-right: 35px;
 }
 
-.hero h1{
-font-size:31px;
+.modal-box p {
+    color: #666;
+    margin-bottom: 20px;
+    line-height: 1.5;
 }
 
-nav a{
-font-size:13px;
-margin-left:10px;
+.file-input {
+    width: 100%;
+    padding: 15px;
+    border: 2px dashed #7b61ff;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    background: #faf9ff;
 }
 
-.modal-content{
-padding:30px 18px;
-margin:15px auto;
+.text-input,
+.number-input,
+.password-input {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
 }
 
+.action-btn {
+    width: 100%;
+    padding: 15px;
+    background: #6d4aff;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 17px;
+    cursor: pointer;
 }
 
+.action-btn:hover {
+    background: #5436d8;
+}
+
+.status {
+    margin-top: 15px;
+    text-align: center;
+    color: #6d4aff;
+    font-weight: bold;
+    min-height: 25px;
+}
+
+.note {
+    font-size: 13px;
+    background: #fff8df;
+    padding: 12px;
+    border-radius: 10px;
+    color: #765c00;
+    margin-bottom: 15px;
+}
+
+@media (max-width: 600px) {
+
+    header {
+        padding: 18px 20px;
+    }
+
+    .logo {
+        font-size: 25px;
+    }
+
+    nav a {
+        margin-left: 12px;
+        font-size: 14px;
+    }
+
+    .hero {
+        padding: 60px 20px 45px;
+    }
+
+    .hero h1 {
+        font-size: 34px;
+    }
+
+    .hero p {
+        font-size: 18px;
+    }
+
+    .tools-section {
+        padding: 50px 20px;
+    }
+
+    .tools-section h2 {
+        font-size: 32px;
+    }
+
+    .tool-card {
+        padding: 30px 15px;
+    }
+
+}
 </style>
 </head>
 
 <body>
 
 <header>
+    <div class="logo">PDFVerse</div>
 
-<div class="logo">PDFVerse</div>
-
-<nav>
-<a href="#">Home</a>
-<a href="#tools">Tools</a>
-</nav>
-
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#tools">Tools</a>
+    </nav>
 </header>
 
 
-<section class="hero">
+<section class="hero" id="home">
 
-<h1>All Your PDF Tools in One Place</h1>
+    <h1>All Your PDF Tools in One Place</h1>
 
-<p>
-Fast, simple and powerful PDF tools that work directly in your browser.
-</p>
+    <p>
+        Easily manage, convert and organize your PDF files
+        with simple and powerful tools.
+    </p>
+
+    <div class="upload-box">
+
+        <h2>Upload Your PDF</h2>
+
+        <p>Select a PDF file to get started.</p>
+
+        <input
+            type="file"
+            id="quickPDF"
+            accept=".pdf"
+            style="display:none"
+        >
+
+        <button
+            class="primary-btn"
+            onclick="document.getElementById('quickPDF').click()"
+        >
+            Choose PDF File
+        </button>
+
+    </div>
 
 </section>
 
 
-<section class="tools" id="tools">
+<section class="tools-section" id="tools">
 
-<h2 class="section-title">PDF Tools</h2>
+<h2>PDF Tools</h2>
 
-<div class="tool-grid">
+<div class="tools-grid">
 
 
-<div class="tool" onclick="openTool('merge')">
-
+<div class="tool-card" onclick="openTool('merge')">
 <div class="tool-icon">🔗</div>
-
 <h3>Merge PDF</h3>
-
-<p>Combine multiple PDFs into one.</p>
-
+<p>Combine multiple PDF files into one.</p>
 </div>
 
 
-<div class="tool" onclick="openTool('split')">
-
+<div class="tool-card" onclick="openTool('split')">
 <div class="tool-icon">✂️</div>
-
 <h3>Split PDF</h3>
-
 <p>Split every PDF page into separate files.</p>
-
 </div>
 
 
-<div class="tool" onclick="openTool('rotate')">
-
-<div class="tool-icon">🔄</div>
-
-<h3>Rotate PDF</h3>
-
-<p>Rotate all pages of your PDF.</p>
-
-</div>
-
-
-<div class="tool" onclick="openTool('delete')">
-
+<div class="tool-card" onclick="openTool('delete')">
 <div class="tool-icon">🗑️</div>
-
 <h3>Delete Pages</h3>
-
 <p>Remove unwanted PDF pages.</p>
-
 </div>
 
 
-<div class="tool" onclick="openTool('image')">
-
+<div class="tool-card" onclick="openTool('imagepdf')">
 <div class="tool-icon">🖼️</div>
-
 <h3>Image to PDF</h3>
-
-<p>Convert images into a PDF.</p>
-
+<p>Convert images into one PDF.</p>
 </div>
 
 
-<div class="tool" onclick="openTool('pdfimage')">
-
+<div class="tool-card" onclick="openTool('pdftoimage')">
 <div class="tool-icon">📄</div>
-
 <h3>PDF to Image</h3>
-
 <p>Convert PDF pages into PNG images.</p>
-
 </div>
 
 
-<div class="tool" onclick="openTool('numbers')">
-
+<div class="tool-card" onclick="openTool('numbers')">
 <div class="tool-icon">🏷️</div>
-
 <h3>Add Page Numbers</h3>
-
 <p>Add customizable page numbers.</p>
-
 </div>
 
 
-<div class="tool" onclick="openTool('protect')">
-
+<div class="tool-card" onclick="openTool('password')">
 <div class="tool-icon">🔐</div>
-
-<h3>Protect PDF</h3>
-
-<p>Password protection for your PDF.</p>
-
-</div>
-
-
-<div class="tool" onclick="openTool('lock')">
-
-<div class="tool-icon">🔒</div>
-
-<h3>Lock PDF</h3>
-
-<p>Protect your PDF with a password.</p>
-
-</div>
-
-
-<div class="tool" onclick="openTool('unlock')">
-
-<div class="tool-icon">🔓</div>
-
-<h3>Unlock PDF</h3>
-
-<p>Remove password protection.</p>
-
+<h3>PDF Password</h3>
+<p>Open password-protected PDFs using the password.</p>
 </div>
 
 
@@ -378,1096 +410,555 @@ Fast, simple and powerful PDF tools that work directly in your browser.
 </section>
 
 
+<footer>
+© 2026 PDFVerse - All Your PDF Tools in One Place
+</footer>
 
-<!-- MERGE PDF -->
 
-<div id="mergeModal" class="pdf-modal">
+<!-- MODAL -->
 
-<div class="modal-content">
+<div class="modal" id="modal">
 
-<button class="close-btn" onclick="closeTool('merge')">×</button>
+<div class="modal-box">
 
-<h2>Merge PDF</h2>
+<span class="close" onclick="closeTool()">&times;</span>
+
+<div id="modalContent"></div>
+
+</div>
+
+</div>
+
+
+<script>
+
+let currentTool = "";
+
+
+/* =========================
+OPEN TOOL
+========================= */
+
+function openTool(tool) {
+
+    currentTool = tool;
+
+    document.getElementById("modal").style.display = "block";
+
+    const content =
+        document.getElementById("modalContent");
+
+
+/* MERGE */
+
+if (tool === "merge") {
+
+content.innerHTML = `
+
+<h2>🔗 Merge PDF</h2>
 
 <p>Select two or more PDF files.</p>
-
-<label class="upload-btn">
-
-Select PDF Files
 
 <input
 type="file"
 id="mergeFiles"
-accept="application/pdf"
+accept=".pdf"
 multiple
+class="file-input"
 >
-
-</label>
-
-<div
-id="mergeList"
-class="file-list"
-></div>
 
 <button
-id="mergeBtn"
 class="action-btn"
-style="display:none"
+onclick="mergePDFs()"
 >
-
-Merge & Download
-
+Merge PDFs
 </button>
 
-<div
-id="mergeStatus"
-class="status"
-></div>
+<div class="status" id="status"></div>
 
-</div>
+`;
 
-</div>
+}
 
 
+/* SPLIT */
 
-<!-- SPLIT PDF -->
+if (tool === "split") {
 
-<div id="splitModal" class="pdf-modal">
+content.innerHTML = `
 
-<div class="modal-content">
+<h2>✂️ Split PDF</h2>
 
-<button class="close-btn" onclick="closeTool('split')">×</button>
-
-<h2>Split PDF</h2>
-
-<p>
-Each PDF page will be saved as a separate PDF inside a ZIP file.
-</p>
-
-<label class="upload-btn">
-
-Select PDF
+<p>Each PDF page will be downloaded as a separate PDF file.</p>
 
 <input
 type="file"
 id="splitFile"
-accept="application/pdf"
+accept=".pdf"
+class="file-input"
 >
-
-</label>
-
-<div
-id="splitList"
-class="file-list"
-></div>
 
 <button
-id="splitBtn"
 class="action-btn"
-style="display:none"
+onclick="splitPDF()"
 >
-
-Split & Download ZIP
-
+Split PDF
 </button>
 
-<div
-id="splitStatus"
-class="status"
-></div>
+<div class="status" id="status"></div>
 
-</div>
+`;
 
-</div>
+}
 
 
+/* DELETE */
 
-<!-- ROTATE PDF -->
+if (tool === "delete") {
 
-<div id="rotateModal" class="pdf-modal">
+content.innerHTML = `
 
-<div class="modal-content">
+<h2>🗑️ Delete PDF Pages</h2>
 
-<button class="close-btn" onclick="closeTool('rotate')">×</button>
-
-<h2>Rotate PDF</h2>
-
-<label class="upload-btn">
-
-Select PDF
-
-<input
-type="file"
-id="rotateFile"
-accept="application/pdf"
->
-
-</label>
-
-<select
-id="rotateDegrees"
-class="option-input"
->
-
-<option value="90">Rotate 90°</option>
-
-<option value="180">Rotate 180°</option>
-
-<option value="270">Rotate 270°</option>
-
-</select>
-
-<div
-id="rotateList"
-class="file-list"
-></div>
-
-<button
-id="rotateBtn"
-class="action-btn"
-style="display:none"
->
-
-Rotate & Download
-
-</button>
-
-<div
-id="rotateStatus"
-class="status"
-></div>
-
-</div>
-
-</div>
-
-
-
-<!-- DELETE PAGES -->
-
-<div id="deleteModal" class="pdf-modal">
-
-<div class="modal-content">
-
-<button class="close-btn" onclick="closeTool('delete')">×</button>
-
-<h2>Delete PDF Pages</h2>
-
-<p>
-Enter pages separated by commas.
-Example: 2,4,7
-</p>
-
-<label class="upload-btn">
-
-Select PDF
+<p>Select a PDF and enter page numbers to remove.</p>
 
 <input
 type="file"
 id="deleteFile"
-accept="application/pdf"
+accept=".pdf"
+class="file-input"
 >
-
-</label>
 
 <input
+type="text"
 id="deletePages"
-class="option-input"
-placeholder="Pages to delete: 2,4,7"
+class="text-input"
+placeholder="Example: 2, 4, 5"
 >
-
-<div
-id="deleteList"
-class="file-list"
-></div>
 
 <button
-id="deleteBtn"
 class="action-btn"
-style="display:none"
+onclick="deletePDFPages()"
 >
-
-Delete & Download
-
+Delete Pages
 </button>
 
-<div
-id="deleteStatus"
-class="status"
-></div>
+<div class="status" id="status"></div>
 
-</div>
+`;
 
-</div>
+}
 
 
+/* IMAGE TO PDF */
 
-<!-- IMAGE TO PDF -->
+if (tool === "imagepdf") {
 
-<div id="imageModal" class="pdf-modal">
+content.innerHTML = `
 
-<div class="modal-content">
+<h2>🖼️ Image to PDF</h2>
 
-<button class="close-btn" onclick="closeTool('image')">×</button>
-
-<h2>Image to PDF</h2>
-
-<p>Select one or more JPG or PNG images.</p>
-
-<label class="upload-btn">
-
-Select Images
+<p>Select one or more images.</p>
 
 <input
 type="file"
 id="imageFiles"
-accept="image/jpeg,image/png"
+accept="image/*"
 multiple
+class="file-input"
 >
-
-</label>
-
-<div
-id="imageList"
-class="file-list"
-></div>
 
 <button
-id="imageBtn"
 class="action-btn"
-style="display:none"
+onclick="imagesToPDF()"
 >
-
-Create & Download PDF
-
+Convert to PDF
 </button>
 
-<div
-id="imageStatus"
-class="status"
-></div>
+<div class="status" id="status"></div>
 
-</div>
+`;
 
-</div>
+}
 
 
+/* PDF TO IMAGE */
 
-<!-- PDF TO IMAGE -->
+if (tool === "pdftoimage") {
 
-<div id="pdfimageModal" class="pdf-modal">
+content.innerHTML = `
 
-<div class="modal-content">
+<h2>📄 PDF to Image</h2>
 
-<button class="close-btn" onclick="closeTool('pdfimage')">×</button>
-
-<h2>PDF to Image</h2>
-
-<p>
-Convert every PDF page into PNG images.
-</p>
-
-<label class="upload-btn">
-
-Select PDF
+<p>Convert every PDF page into PNG.</p>
 
 <input
 type="file"
 id="pdfImageFile"
-accept="application/pdf"
+accept=".pdf"
+class="file-input"
 >
-
-</label>
-
-<div
-id="pdfImageList"
-class="file-list"
-></div>
 
 <button
-id="pdfImageBtn"
 class="action-btn"
-style="display:none"
+onclick="pdfToImages()"
 >
-
-Convert & Download ZIP
-
+Convert to PNG
 </button>
 
-<div
-id="pdfImageStatus"
-class="status"
-></div>
+<div class="status" id="status"></div>
 
-</div>
+`;
 
-</div>
+}
 
 
+/* PAGE NUMBERS */
 
-<!-- ADD PAGE NUMBERS -->
+if (tool === "numbers") {
 
-<div id="numbersModal" class="pdf-modal">
+content.innerHTML = `
 
-<div class="modal-content">
+<h2>🏷️ Add Page Numbers</h2>
 
-<button class="close-btn" onclick="closeTool('numbers')">×</button>
-
-<h2>Add Page Numbers</h2>
-
-<p>
-Add customizable page numbers to every page.
-</p>
-
-<label class="upload-btn">
-
-Select PDF
+<p>Select a PDF file.</p>
 
 <input
 type="file"
-id="numbersFile"
-accept="application/pdf"
+id="numberFile"
+accept=".pdf"
+class="file-input"
 >
-
-</label>
-
-<div
-id="numbersList"
-class="file-list"
-></div>
-
 
 <select
 id="numberPosition"
-class="option-input"
+class="text-input"
 >
-
 <option value="bottom-center">
 Bottom Center
-</option>
-
-<option value="bottom-right">
-Bottom Right
 </option>
 
 <option value="bottom-left">
 Bottom Left
 </option>
 
+<option value="bottom-right">
+Bottom Right
+</option>
+
 <option value="top-center">
 Top Center
 </option>
 
-<option value="top-right">
-Top Right
-</option>
-
-<option value="top-left">
-Top Left
-</option>
-
 </select>
 
-
-<select
-id="numberFormat"
-class="option-input"
->
-
-<option value="number">
-1, 2, 3
-</option>
-
-<option value="page">
-Page 1, Page 2
-</option>
-
-<option value="total">
-1 / 10, 2 / 10
-</option>
-
-</select>
-
-
-<input
-type="number"
-id="numberStart"
-class="option-input"
-value="1"
-min="1"
-placeholder="Starting page number"
->
-
-
-<input
-type="number"
-id="numberSize"
-class="option-input"
-value="12"
-min="8"
-max="72"
-placeholder="Font size"
->
-
-
 <button
-id="numbersBtn"
 class="action-btn"
-style="display:none"
+onclick="addPageNumbers()"
 >
-
-Add Numbers & Download
-
+Add Page Numbers
 </button>
 
-<div
-id="numbersStatus"
-class="status"
-></div>
+<div class="status" id="status"></div>
+
+`;
+
+}
+
+
+/* PASSWORD */
+
+if (tool === "password") {
+
+content.innerHTML = `
+
+<h2>🔐 PDF Password</h2>
+
+<p>Enter the password to open a protected PDF.</p>
+
+<div class="note">
+
+For real PDF encryption, a dedicated server-side
+PDF encryption system is required. This static website
+can safely process password-protected PDFs only when
+you know the password.
 
 </div>
-
-</div>
-
-
-
-<!-- PROTECT PDF -->
-
-<div id="protectModal" class="pdf-modal">
-
-<div class="modal-content">
-
-<button class="close-btn" onclick="closeTool('protect')">×</button>
-
-<h2>Protect PDF</h2>
-
-<p>
-Password protection feature.
-</p>
-
-<label class="upload-btn">
-
-Select PDF
 
 <input
 type="file"
-id="protectFile"
-accept="application/pdf"
+id="passwordFile"
+accept=".pdf"
+class="file-input"
 >
-
-</label>
 
 <input
 type="password"
-id="protectPassword"
-class="option-input"
-placeholder="Enter password"
->
-
-<div
-id="protectList"
-class="file-list"
-></div>
-
-<button
-id="protectBtn"
-class="action-btn"
-style="display:none"
->
-
-Protect PDF
-
-</button>
-
-<div
-id="protectStatus"
-class="status"
-></div>
-
-</div>
-
-</div>
-
-
-
-<!-- LOCK PDF -->
-
-<div id="lockModal" class="pdf-modal">
-
-<div class="modal-content">
-
-<button class="close-btn" onclick="closeTool('lock')">×</button>
-
-<h2>🔒 Lock PDF</h2>
-
-<p>
-Upload a PDF and create a password.
-</p>
-
-<label class="upload-btn">
-
-Select PDF
-
-<input
-type="file"
-id="lockFile"
-accept="application/pdf"
->
-
-</label>
-
-<div
-id="lockList"
-class="file-list"
-></div>
-
-
-<input
-type="password"
-id="lockPassword"
-class="option-input"
-placeholder="Enter password"
->
-
-
-<input
-type="password"
-id="lockConfirmPassword"
-class="option-input"
-placeholder="Confirm password"
->
-
-
-<button
-id="lockBtn"
-class="action-btn"
-style="display:none"
->
-
-Lock PDF
-
-</button>
-
-
-<div
-id="lockStatus"
-class="status"
-></div>
-
-</div>
-
-</div>
-
-
-
-<!-- UNLOCK PDF -->
-
-<div id="unlockModal" class="pdf-modal">
-
-<div class="modal-content">
-
-<button class="close-btn" onclick="closeTool('unlock')">×</button>
-
-<h2>🔓 Unlock PDF</h2>
-
-<p>
-Enter the correct password to unlock your PDF.
-</p>
-
-<label class="upload-btn">
-
-Select Locked PDF
-
-<input
-type="file"
-id="unlockFile"
-accept="application/pdf"
->
-
-</label>
-
-<div
-id="unlockList"
-class="file-list"
-></div>
-
-
-<input
-type="password"
-id="unlockPassword"
-class="option-input"
+id="pdfPassword"
+class="password-input"
 placeholder="Enter PDF password"
 >
 
-
 <button
-id="unlockBtn"
 class="action-btn"
-style="display:none"
+onclick="checkPDFPassword()"
 >
-
-Unlock PDF
-
+Open Protected PDF
 </button>
 
+<div class="status" id="status"></div>
 
-<div
-id="unlockStatus"
-class="status"
-></div>
+`;
 
-</div>
-
-</div>
-
-
-
-<footer>
-
-© 2026 PDFVerse. All rights reserved.
-
-</footer>
-
-
-
-<script>
-
-/* OPEN AND CLOSE TOOLS */
-
-function openTool(name){
-
-document.getElementById(
-name+"Modal"
-).style.display="block";
+}
 
 }
 
 
-function closeTool(name){
+/* =========================
+CLOSE TOOL
+========================= */
 
-document.getElementById(
-name+"Modal"
-).style.display="none";
+function closeTool() {
 
-}
-
-
-
-/* SHOW FILES */
-
-function showFiles(input,list,button){
-
-const files=
-Array.from(input.files);
-
-list.innerHTML="";
-
-files.forEach((file,i)=>{
-
-const item=
-document.createElement("div");
-
-item.className=
-"file-item";
-
-item.innerText=
-(i+1)+". "+file.name;
-
-list.appendChild(item);
-
-});
-
-button.style.display=
-files.length?"block":"none";
+document.getElementById("modal").style.display = "none";
 
 }
 
 
+/* =========================
+STATUS
+========================= */
 
-/* DOWNLOAD FILE */
+function setStatus(message) {
 
-function downloadBlob(data,name,type){
+const status =
+document.getElementById("status");
 
-const blob=
-new Blob([data],{
-type:type
-});
+if (status) {
 
-const url=
+status.innerText = message;
+
+}
+
+}
+
+
+/* =========================
+DOWNLOAD
+========================= */
+
+function downloadFile(bytes, filename, type) {
+
+const blob =
+new Blob(
+[bytes],
+{ type: type }
+);
+
+const url =
 URL.createObjectURL(blob);
 
-const a=
+const a =
 document.createElement("a");
 
-a.href=url;
+a.href = url;
 
-a.download=name;
-
-document.body.appendChild(a);
+a.download = filename;
 
 a.click();
 
-a.remove();
-
-setTimeout(()=>{
+setTimeout(() => {
 
 URL.revokeObjectURL(url);
 
-},1000);
+}, 1000);
 
 }
 
 
+/* =========================
+MERGE PDF
+========================= */
 
-/* MERGE PDF */
+async function mergePDFs() {
 
-const mergeFiles=
-document.getElementById("mergeFiles");
+const files =
+document.getElementById("mergeFiles").files;
 
-const mergeList=
-document.getElementById("mergeList");
+if (files.length < 2) {
 
-const mergeBtn=
-document.getElementById("mergeBtn");
-
-
-mergeFiles.onchange=()=>{
-
-showFiles(
-mergeFiles,
-mergeList,
-mergeBtn
+setStatus(
+"Please select at least 2 PDF files."
 );
 
-if(mergeFiles.files.length<2){
-
-mergeBtn.style.display=
-"none";
-
-mergeList.innerHTML=
-"<p>Please select at least 2 PDF files.</p>";
+return;
 
 }
 
-};
+try {
 
+setStatus("Merging PDFs...");
 
-mergeBtn.onclick=async()=>{
-
-try{
-
-mergeBtn.disabled=true;
-
-document.getElementById(
-"mergeStatus"
-).innerText=
-"Merging PDFs...";
-
-
-const merged=
+const mergedPdf =
 await PDFLib.PDFDocument.create();
 
 
-for(const file of mergeFiles.files){
+for (const file of files) {
 
-const pdf=
-await PDFLib.PDFDocument.load(
-await file.arrayBuffer()
-);
+const bytes =
+await file.arrayBuffer();
 
+const pdf =
+await PDFLib.PDFDocument.load(bytes);
 
-const pages=
-await merged.copyPages(
+const copiedPages =
+await mergedPdf.copyPages(
 pdf,
 pdf.getPageIndices()
 );
 
+copiedPages.forEach(page => {
 
-pages.forEach(page=>{
-
-merged.addPage(page);
+mergedPdf.addPage(page);
 
 });
 
 }
 
 
-const bytes=
-await merged.save();
+const result =
+await mergedPdf.save();
 
 
-downloadBlob(
-bytes,
-"PDFVerse-Merged.pdf",
+downloadFile(
+result,
+"merged.pdf",
 "application/pdf"
 );
 
+setStatus(
+"PDF merged successfully!"
+);
 
-document.getElementById(
-"mergeStatus"
-).innerText=
-"PDF merged successfully!";
+}
 
+catch(error) {
 
-}catch(e){
+console.error(error);
 
-console.error(e);
+setStatus(
+"Error merging PDF files."
+);
 
-document.getElementById(
-"mergeStatus"
-).innerText=
-"Error. Please try again.";
+}
 
 }
 
 
-mergeBtn.disabled=false;
+/* =========================
+SPLIT PDF
+========================= */
 
-};
+async function splitPDF() {
 
+const file =
+document.getElementById("splitFile").files[0];
 
+if (!file) {
 
-/* SPLIT PDF */
+setStatus("Please select a PDF.");
 
-const splitFile=
-document.getElementById("splitFile");
+return;
 
-const splitBtn=
-document.getElementById("splitBtn");
+}
 
+try {
 
-splitFile.onchange=()=>{
+setStatus("Splitting PDF...");
 
-showFiles(
-splitFile,
-document.getElementById(
-"splitList"
-),
-splitBtn
-);
+const bytes =
+await file.arrayBuffer();
 
-};
+const originalPdf =
+await PDFLib.PDFDocument.load(bytes);
 
-
-splitBtn.onclick=async()=>{
-
-try{
-
-splitBtn.disabled=true;
-
-document.getElementById(
-"splitStatus"
-).innerText=
-"Splitting PDF...";
+const pageCount =
+originalPdf.getPageCount();
 
 
-const source=
-await PDFLib.PDFDocument.load(
-await splitFile.files[0].arrayBuffer()
-);
-
-
-const zip=
-new JSZip();
-
-
-for(
-let i=0;
-i<source.getPageCount();
+for (
+let i = 0;
+i < pageCount;
 i++
-){
+) {
 
-const newPdf=
+const newPdf =
 await PDFLib.PDFDocument.create();
 
-
-const [page]=
+const [page] =
 await newPdf.copyPages(
-source,
+originalPdf,
 [i]
 );
 
-
 newPdf.addPage(page);
 
-
-const bytes=
+const result =
 await newPdf.save();
 
 
-zip.file(
-"page-"+(i+1)+".pdf",
-bytes
-);
-
-}
-
-
-const blob=
-await zip.generateAsync({
-type:"blob"
-});
-
-
-downloadBlob(
-blob,
-"PDFVerse-Split.zip",
-"application/zip"
-);
-
-
-document.getElementById(
-"splitStatus"
-).innerText=
-"PDF split successfully!";
-
-
-}catch(e){
-
-console.error(e);
-
-document.getElementById(
-"splitStatus"
-).innerText=
-"Error. Please try again.";
-
-}
-
-
-splitBtn.disabled=false;
-
-};
-
-
-
-/* ROTATE PDF */
-
-const rotateFile=
-document.getElementById("rotateFile");
-
-const rotateBtn=
-document.getElementById("rotateBtn");
-
-
-rotateFile.onchange=()=>{
-
-showFiles(
-rotateFile,
-document.getElementById(
-"rotateList"
-),
-rotateBtn
-);
-
-};
-
-
-rotateBtn.onclick=async()=>{
-
-try{
-
-rotateBtn.disabled=true;
-
-document.getElementById(
-"rotateStatus"
-).innerText=
-"Rotating PDF...";
-
-
-const pdf=
-await PDFLib.PDFDocument.load(
-await rotateFile.files[0].arrayBuffer()
-);
-
-
-const degrees=
-parseInt(
-document.getElementById(
-"rotateDegrees"
-).value
-);
-
-
-pdf.getPages().forEach(page=>{
-
-page.setRotation(
-PDFLib.degrees(degrees)
-);
-
-});
-
-
-const bytes=
-await pdf.save();
-
-
-downloadBlob(
-bytes,
-"PDFVerse-Rotated.pdf",
+downloadFile(
+result,
+"page-" + (i + 1) + ".pdf",
 "application/pdf"
 );
 
-
-document.getElementById(
-"rotateStatus"
-).innerText=
-"PDF rotated successfully!";
-
-
-}catch(e){
-
-console.error(e);
-
-document.getElementById(
-"rotateStatus"
-).innerText=
-"Error. Please try again.";
+await new Promise(resolve =>
+setTimeout(resolve, 500)
+);
 
 }
 
 
-rotateBtn.disabled=false;
-
-};
-
-
-
-/* DELETE PAGES */
-
-const deleteFile=
-document.getElementById("deleteFile");
-
-const deleteBtn=
-document.getElementById("deleteBtn");
-
-
-deleteFile.onchange=()=>{
-
-showFiles(
-deleteFile,
-document.getElementById(
-"deleteList"
-),
-deleteBtn
+setStatus(
+"Split complete!"
 );
 
-};
+}
+
+catch(error) {
+
+console.error(error);
+
+setStatus(
+"Error splitting PDF."
+);
+
+}
+
+}
 
 
-deleteBtn.onclick=async()=>{
+/* =========================
+DELETE PAGES
+========================= */
 
-try{
+async function deletePDFPages() {
 
-const text=
-document.getElementById(
-"deletePages"
-).value.trim();
+const file =
+document.getElementById("deleteFile").files[0];
+
+const pagesText =
+document
+.getElementById("deletePages")
+.value;
 
 
-if(!text){
+if (!file) {
 
-alert(
-"Please enter page numbers."
+setStatus(
+"Please select a PDF."
 );
 
 return;
@@ -1475,346 +966,365 @@ return;
 }
 
 
-deleteBtn.disabled=true;
+if (!pagesText) {
+
+setStatus(
+"Enter page numbers to delete."
+);
+
+return;
+
+}
 
 
-document.getElementById(
-"deleteStatus"
-).innerText=
-"Deleting pages...";
+try {
+
+setStatus(
+"Deleting pages..."
+);
+
+const bytes =
+await file.arrayBuffer();
+
+const pdf =
+await PDFLib.PDFDocument.load(bytes);
 
 
-const remove=
-text
+const pageNumbers =
+pagesText
 .split(",")
-.map(x=>parseInt(
-x.trim()
-)-1)
-.filter(x=>!isNaN(x));
-
-
-const source=
-await PDFLib.PDFDocument.load(
-await deleteFile.files[0].arrayBuffer()
+.map(
+number =>
+parseInt(number.trim())
+)
+.filter(
+number =>
+!isNaN(number)
+)
+.sort(
+(a, b) => b - a
 );
 
 
-const newPdf=
-await PDFLib.PDFDocument.create();
+const totalPages =
+pdf.getPageCount();
 
 
-for(
-let i=0;
-i<source.getPageCount();
-i++
-){
+for (
+const pageNumber
+of pageNumbers
+) {
 
-if(!remove.includes(i)){
+if (
+pageNumber >= 1 &&
+pageNumber <= totalPages
+) {
 
-const [page]=
-await newPdf.copyPages(
-source,
-[i]
+pdf.removePage(
+pageNumber - 1
 );
-
-newPdf.addPage(page);
 
 }
 
 }
 
 
-const bytes=
-await newPdf.save();
+if (
+pdf.getPageCount() === 0
+) {
+
+setStatus(
+"You cannot delete every page."
+);
+
+return;
+
+}
 
 
-downloadBlob(
-bytes,
-"PDFVerse-Edited.pdf",
+const result =
+await pdf.save();
+
+
+downloadFile(
+result,
+"pages-deleted.pdf",
 "application/pdf"
 );
 
 
-document.getElementById(
-"deleteStatus"
-).innerText=
-"Pages deleted successfully!";
+setStatus(
+"Pages deleted successfully!"
+);
 
+}
 
-}catch(e){
+catch(error) {
 
-console.error(e);
+console.error(error);
 
-document.getElementById(
-"deleteStatus"
-).innerText=
-"Error. Please try again.";
+setStatus(
+"Error deleting pages."
+);
+
+}
 
 }
 
 
-deleteBtn.disabled=false;
+/* =========================
+IMAGE TO PDF
+========================= */
 
-};
+async function imagesToPDF() {
 
+const files =
+document.getElementById("imageFiles").files;
 
+if (!files.length) {
 
-/* IMAGE TO PDF */
-
-const imageFiles=
-document.getElementById(
-"imageFiles"
+setStatus(
+"Please select images."
 );
 
-const imageBtn=
-document.getElementById(
-"imageBtn"
+return;
+
+}
+
+try {
+
+setStatus(
+"Creating PDF..."
 );
 
-
-imageFiles.onchange=()=>{
-
-showFiles(
-imageFiles,
-document.getElementById(
-"imageList"
-),
-imageBtn
-);
-
-};
-
-
-imageBtn.onclick=async()=>{
-
-try{
-
-imageBtn.disabled=true;
-
-
-document.getElementById(
-"imageStatus"
-).innerText=
-"Creating PDF...";
-
-
-const {jsPDF}=
+const { jsPDF } =
 window.jspdf;
 
 
-const pdf=
-new jsPDF();
+let pdf = null;
 
 
-for(
-let i=0;
-i<imageFiles.files.length;
+for (
+let i = 0;
+i < files.length;
 i++
-){
+) {
 
-const file=
-imageFiles.files[i];
+const image =
+files[i];
 
-
-const data=
-await readFile(file);
-
-
-const img=
-await loadImage(data);
+const imageURL =
+URL.createObjectURL(image);
 
 
-if(i>0){
+const img =
+new Image();
 
-pdf.addPage();
+
+await new Promise(
+(resolve, reject) => {
+
+img.onload = resolve;
+
+img.onerror = reject;
+
+img.src = imageURL;
 
 }
+);
 
 
-const pageWidth=
-pdf.internal.pageSize.getWidth();
-
-
-const pageHeight=
-pdf.internal.pageSize.getHeight();
-
-
-let width=
-pageWidth;
-
-
-let height=
-img.height*
-width/
+const width =
 img.width;
 
-
-if(height>pageHeight){
-
-height=
-pageHeight;
-
-
-width=
-img.width*
-height/
+const height =
 img.height;
+
+
+const orientation =
+width > height
+?
+"l"
+:
+"p";
+
+
+if (i === 0) {
+
+pdf =
+new jsPDF({
+orientation:
+orientation,
+unit:
+"px",
+format:
+[
+width,
+height
+]
+});
 
 }
 
+else {
 
-const x=
-(pageWidth-width)/2;
+pdf.addPage(
+[
+width,
+height
+],
+orientation
+);
 
-
-const y=
-(pageHeight-height)/2;
+}
 
 
 pdf.addImage(
-data,
-file.type==="image/png"
-?"PNG"
-:"JPEG",
-x,
-y,
+img,
+"JPEG",
+0,
+0,
 width,
 height
+);
+
+
+URL.revokeObjectURL(
+imageURL
 );
 
 }
 
 
 pdf.save(
-"PDFVerse-Images.pdf"
+"images.pdf"
 );
 
 
-document.getElementById(
-"imageStatus"
-).innerText=
-"PDF created successfully!";
+setStatus(
+"PDF created successfully!"
+);
 
+}
 
-}catch(e){
+catch(error) {
 
-console.error(e);
+console.error(error);
 
-document.getElementById(
-"imageStatus"
-).innerText=
-"Error. Please try again.";
+setStatus(
+"Error creating PDF."
+);
+
+}
 
 }
 
 
-imageBtn.disabled=false;
+/* =========================
+PDF TO IMAGE
+========================= */
 
-};
+async function pdfToImages() {
 
+const file =
+document.getElementById("pdfImageFile").files[0];
 
+if (!file) {
 
-/* PDF TO IMAGE */
-
-const pdfImageFile=
-document.getElementById(
-"pdfImageFile"
+setStatus(
+"Please select a PDF."
 );
 
-const pdfImageBtn=
-document.getElementById(
-"pdfImageBtn"
-);
+return;
 
+}
 
-pdfImageFile.onchange=()=>{
+try {
 
-showFiles(
-pdfImageFile,
-document.getElementById(
-"pdfImageList"
-),
-pdfImageBtn
-);
-
-};
-
-
-pdfImageBtn.onclick=async()=>{
-
-try{
-
-pdfImageBtn.disabled=true;
-
-
-document.getElementById(
-"pdfImageStatus"
-).innerText=
-"Converting PDF...";
-
-
-const data=
-new Uint8Array(
-await pdfImageFile.files[0].arrayBuffer()
+setStatus(
+"Converting PDF..."
 );
 
 
-const pdf=
+const pdfjsLib =
+await import(
+"https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs"
+);
+
+
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+"https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs";
+
+
+const data =
+await file.arrayBuffer();
+
+
+const pdf =
 await pdfjsLib.getDocument({
-data:data
+data: data
 }).promise;
 
 
-const zip=
-new JSZip();
+for (
+let pageNumber = 1;
+pageNumber <= pdf.numPages;
+pageNumber++
+) {
+
+setStatus(
+"Converting page " +
+pageNumber +
+" of " +
+pdf.numPages
+);
 
 
-for(
-let i=1;
-i<=pdf.numPages;
-i++
-){
-
-const page=
-await pdf.getPage(i);
+const page =
+await pdf.getPage(
+pageNumber
+);
 
 
-const viewport=
+const viewport =
 page.getViewport({
-scale:1.5
+scale: 2
 });
 
 
-const canvas=
+const canvas =
 document.createElement(
 "canvas"
 );
 
 
-canvas.width=
+const context =
+canvas.getContext(
+"2d"
+);
+
+
+canvas.width =
 viewport.width;
 
-
-canvas.height=
+canvas.height =
 viewport.height;
-
-
-const ctx=
-canvas.getContext("2d");
 
 
 await page.render({
 
-canvasContext:ctx,
+canvasContext:
+context,
 
-viewport:viewport
+viewport:
+viewport
 
 }).promise;
 
 
-const blob=
+const blob =
 await new Promise(
-resolve=>
+resolve =>
 canvas.toBlob(
 resolve,
 "image/png"
@@ -1822,20 +1332,392 @@ resolve,
 );
 
 
-zip.file(
-"page-"+i+".png",
+const url =
+URL.createObjectURL(
 blob
+);
+
+
+const a =
+document.createElement(
+"a"
+);
+
+
+a.href = url;
+
+a.download =
+"page-" +
+pageNumber +
+".png";
+
+
+a.click();
+
+
+await new Promise(
+resolve =>
+setTimeout(
+resolve,
+500
+)
+);
+
+
+URL.revokeObjectURL(
+url
 );
 
 }
 
 
-const zipBlob=
-await zip.generateAsync({
-type:"blob"
+setStatus(
+"Images created successfully!"
+);
+
+}
+
+catch(error) {
+
+console.error(error);
+
+setStatus(
+"Error converting PDF."
+);
+
+}
+
+}
+
+
+/* =========================
+ADD PAGE NUMBERS
+========================= */
+
+async function addPageNumbers() {
+
+const file =
+document.getElementById("numberFile").files[0];
+
+const position =
+document.getElementById(
+"numberPosition"
+).value;
+
+
+if (!file) {
+
+setStatus(
+"Please select a PDF."
+);
+
+return;
+
+}
+
+
+try {
+
+setStatus(
+"Adding page numbers..."
+);
+
+
+const bytes =
+await file.arrayBuffer();
+
+
+const pdf =
+await PDFLib.PDFDocument.load(
+bytes
+);
+
+
+const pages =
+pdf.getPages();
+
+
+const font =
+await pdf.embedFont(
+PDFLib.StandardFonts.Helvetica
+);
+
+
+pages.forEach(
+(page, index) => {
+
+
+const {
+width,
+height
+} =
+page.getSize();
+
+
+const text =
+String(
+index + 1
+);
+
+
+const size = 12;
+
+
+const textWidth =
+font.widthOfTextAtSize(
+text,
+size
+);
+
+
+let x =
+(width - textWidth) / 2;
+
+let y = 25;
+
+
+if (
+position ===
+"bottom-left"
+) {
+
+x = 30;
+
+y = 25;
+
+}
+
+
+if (
+position ===
+"bottom-right"
+) {
+
+x =
+width -
+textWidth -
+30;
+
+y = 25;
+
+}
+
+
+if (
+position ===
+"top-center"
+) {
+
+x =
+(width -
+textWidth) /
+2;
+
+y =
+height - 30;
+
+}
+
+
+page.drawText(
+text,
+{
+
+x: x,
+
+y: y,
+
+size: size,
+
+font: font,
+
+color:
+PDFLib.rgb(
+0,
+0,
+0
+)
+
+}
+);
+
+}
+);
+
+
+const result =
+await pdf.save();
+
+
+downloadFile(
+result,
+"numbered.pdf",
+"application/pdf"
+);
+
+
+setStatus(
+"Page numbers added!"
+);
+
+}
+
+catch(error) {
+
+console.error(error);
+
+setStatus(
+"Error adding page numbers."
+);
+
+}
+
+}
+
+
+/* =========================
+PASSWORD CHECK
+========================= */
+
+async function checkPDFPassword() {
+
+const file =
+document.getElementById("passwordFile").files[0];
+
+const password =
+document.getElementById(
+"pdfPassword"
+).value;
+
+
+if (!file) {
+
+setStatus(
+"Please select a PDF."
+);
+
+return;
+
+}
+
+
+if (!password) {
+
+setStatus(
+"Enter the PDF password."
+);
+
+return;
+
+}
+
+
+try {
+
+setStatus(
+"Checking password..."
+);
+
+
+const pdfjsLib =
+await import(
+"https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs"
+);
+
+
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+"https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs";
+
+
+const data =
+await file.arrayBuffer();
+
+
+const loadingTask =
+pdfjsLib.getDocument({
+
+data:
+data,
+
+password:
+password
+
 });
 
 
-downloadBlob(
-zipBlob,
-"PDFVerse-Image
+const pdf =
+await loadingTask.promise;
+
+
+setStatus(
+"PDF opened successfully! " +
+pdf.numPages +
+" pages detected."
+);
+
+
+}
+
+catch(error) {
+
+console.error(error);
+
+setStatus(
+"Incorrect password or unsupported PDF."
+);
+
+}
+
+}
+
+
+/* =========================
+QUICK UPLOAD
+========================= */
+
+document
+.getElementById("quickPDF")
+.addEventListener(
+"change",
+function() {
+
+if (
+this.files.length
+) {
+
+openTool(
+"numbers"
+);
+
+}
+
+}
+);
+
+
+/* =========================
+CLICK OUTSIDE MODAL
+========================= */
+
+window.onclick =
+function(event) {
+
+const modal =
+document.getElementById(
+"modal"
+);
+
+if (
+event.target === modal
+) {
+
+closeTool();
+
+}
+
+};
+
+</script>
+
+</body>
+</html>
