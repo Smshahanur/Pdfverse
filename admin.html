@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SMLOOP Admin Panel</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f4f5fb;
+      color: #333;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* LOGIN */
+
+    #loginPage {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 400px;
+      background: white;
+      padding: 35px 30px;
+      border-radius: 24px;
+      box-shadow: 0 15px 50px rgba(80, 60, 140, 0.15);
+      text-align: center;
+    }
+
+    .login-box h1 {
+      color: #5c43b4;
+      margin-bottom: 8px;
+    }
+
+    .login-box p {
+      color: #777;
+      margin-bottom: 25px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    input:focus, textarea:focus {
+      border-color: #684ac2;
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+      border-radius: 12px;
+      padding: 13px 20px;
+      font-size: 16px;
+    }
+
+    .login-btn {
+      width: 100%;
+      background: #6246b8;
+      color: white;
+    }
+
+    .login-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    #loginMessage {
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    /* ADMIN */
+
+    #adminPage {
+      min-height: 100vh;
+    }
+
+    .topbar {
+      background: white;
+      padding: 15px 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.06);
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: #5c43b4;
+    }
+
+    .logout-btn {
+      background: #ef4444;
+      color: white;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 30px 20px;
+    }
+
+    .header {
+      margin-bottom: 25px;
+    }
+
+    .header h2 {
+      margin-bottom: 5px;
+    }
+
+    .header p {
+      color: #777;
+    }
+
+    .form-box {
+      background: white;
+      padding: 25px;
+      border-radius: 18px;
+      margin-bottom: 30px;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.06);
+    }
+
+    .form-box h3 {
+      margin-bottom: 20px;
+    }
+
+    .save-btn {
+      background: #6246b8;
+      color: white;
+      width: 100%;
+    }
+
+    .cancel-btn {
+      background: #ddd;
+      margin-top: 10px;
+      width: 100%;
+    }
+
+    .tools-title {
+      margin-bottom: 20px;
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+    }
+
+    .tool-card {
+      background: white;
+      padding: 22px;
+      border-radius: 18px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+    }
+
+    .tool-card h3 {
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .tool-card p {
+      color: #777;
+      min-height: 45px;
+      margin-bottom: 20px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .edit-btn {
+      background: #f59e0b;
+      color: white;
+      flex: 1;
+    }
+
+    .delete-btn {
+      background: #ef4444;
+      color: white;
+      flex: 1;
+    }
+
+    .move-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 14px;
+    }
+
+    .move-row input {
+      width: 92px;
+      margin: 0;
+      padding: 11px 10px;
+    }
+
+    .move-btn {
+      background: #2563eb;
+      color: white;
+      flex: 1;
+    }
+
+    .position-badge {
+      display: inline-block;
+      margin-bottom: 10px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: #eee9ff;
+      color: #5c43b4;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 30px;
+      color: #666;
+    }
+
+    .empty {
+      text-align: center;
+      background: white;
+      padding: 40px;
+      border-radius: 18px;
+      color: #777;
+    }
+
+    @media (max-width: 600px) {
+      .topbar {
+        padding: 15px 20px;
+      }
+
+      .container {
+        padding: 25px 15px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- LOGIN PAGE -->
+  <div id="loginPage">
+
+    <div class="login-box">
+
+      <h1>SMLOOP</h1>
+      <p>Admin Panel</p>
+
+      <input
+        type="email"
+        id="email"
+        placeholder="Admin Email"
+      >
+
+      <input
+        type="password"
+        id="password"
+        placeholder="Password"
+      >
+
+      <button
+        class="login-btn"
+        id="loginBtn"
+        onclick="login()"
+      >
+        Login
+      </button>
+
+      <div id="loginMessage"></div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ADMIN PAGE -->
+  <div id="adminPage" class="hidden">
+
+    <div class="topbar">
+
+      <div class="logo">
+        SMLOOP Admin
+      </div>
+
+      <button
+        class="logout-btn"
+        onclick="logout()"
+      >
+        Logout
+      </button>
+
+    </div>
+
+
+    <div class="container">
+
+      <div class="header">
+        <h2>Manage PDF Tools</h2>
+        <p>Add, edit or delete your SMLOOP tools.</p>
+      </div>
+
+
+      <!-- ADD / EDIT FORM -->
+
+      <div class="form-box">
+
+        <h3 id="formTitle">
+          Add New Tool
+        </h3>
+
+        <input
+          type="hidden"
+          id="editId"
+        >
+
+        <input
+          type="text"
+          id="toolName"
+          placeholder="Tool Name"
+        >
+
+        <textarea
+          id="toolDescription"
+          placeholder="Tool Description"
+          rows="4"
+        ></textarea>
+
+        <button
+          class="save-btn"
+          id="saveBtn"
+          onclick="saveTool()"
+        >
+          Add Tool
+        </button>
+
+        <button
+          class="cancel-btn hidden"
+          id="cancelBtn"
+          onclick="cancelEdit()"
+        >
+          Cancel Edit
+        </button>
+
+      </div>
+
+
+      <!-- TOOLS -->
+
+      <h2 class="tools-title">
+        All Tools
+      </h2>
+
+      <div id="toolsList">
+        <div class="loading">
+          Loading tools...
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+<script>
+
+  /* =====================================================
+     SUPABASE CONFIGURATION
+     ===================================================== */
+
+  const SUPABASE_URL = "https://gegzvayhffbzzrbkeccw.supabase.co";
+
+  const SUPABASE_ANON_KEY = "sb_publishable_zGQ1ZuA6BWJhcWRGY1fqsw_ocdFkjac";
+
+
+  /* =====================================================
+     CREATE SUPABASE CLIENT
+     ===================================================== */
+
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    );
+
+
+  /* =====================================================
+     ADMIN EMAIL
+     ===================================================== */
+
+  const ADMIN_EMAIL =
+    "shahanurmollah1@gmail.com";
+
+
+  /* =====================================================
+     CHECK LOGIN WHEN PAGE OPENS
+     ===================================================== */
+
+  window.addEventListener(
+    "DOMContentLoaded",
+    async () => {
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient.auth.getSession();
+
+
+      if (
+        data &&
+        data.session &&
+        data.session.user
+      ) {
+
+        const userEmail =
+          data.session.user.email;
+
+
+        if (
+          userEmail === ADMIN_EMAIL
+        ) {
+
+          showAdmin();
+
+        } else {
+
+          await supabaseClient.auth.signOut();
+
+        }
+
+      }
+
+    }
+  );
+
+
+  /* =====================================================
+     LOGIN
+     ===================================================== */
+
+  async function login() {
+
+    const email =
+      document
+        .getElementById("email")
+        .value
+        .trim();
+
+
+    const password =
+      document
+        .getElementById("password")
+        .value;
+
+
+    const loginBtn =
+      document
+        .getElementById("loginBtn");
+
+
+    const message =
+      document
+        .getElementById("loginMessage");
+
+
+    if (!email || !password) {
+
+      message.innerHTML =
+        "Please enter email and password.";
+
+      message.style.color =
+        "red";
+
+      return;
+
+    }
+
+
+    loginBtn.disabled = true;
+
+    loginBtn.innerText =
+      "Logging in...";
+
+
+    message.innerText =
+      "";
+
+
+    try {
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient.auth.signInWithPassword({
+          email: email,
+          password: password
+        });
+
+
+      if (error) {
+
+        throw error;
+
+      }
+
+
+      if (
+        !data.user ||
+        data.user.email !== ADMIN_EMAIL
+      ) {
+
+        await supabaseClient.auth.signOut();
+
+        throw new Error(
+          "You are not authorized to access this admin panel."
+        );
+
+      }
+
+
+      message.innerText =
+        "Login successful!";
+
+
+      message.style.color =
+        "green";
+
+
+      showAdmin();
+
+
+    } catch (error) {
+
+      console.error(error);
+
+
+      message.innerText =
+        error.message ||
+        "Login failed.";
+
+
+      message.style.color =
+        "red";
+
+    }
+
+
+    loginBtn.disabled = false;
+
+    loginBtn.innerText =
+      "Login";
+
+  }
+
+
+  /* =====================================================
+     SHOW ADMIN PANEL
+     ===================================================== */
+
+  function showAdmin() {
+
+    document
+      .getElementById("loginPage")
+      .classList
+      .add("hidden");
+
+
+    document
+      .getElementById("adminPage")
+      .classList
+      .remove("hidden");
+
+
+    loadTools();
+
+  }
+
+
+  /* =====================================================
+     LOGOUT
+     ===================================================== */
+
+  async function logout() {
+
+    await supabaseClient
+      .auth
+      .signOut();
+
+
+    location.reload();
+
+  }
+
+
+  let currentTools = [];
+
+  /* =====================================================
+     LOAD TOOLS
+     ===================================================== */
+
+  async function loadTools() {
+
+    const toolsList =
+      document
+        .getElementById("toolsList");
+
+
+    toolsList.innerHTML =
+      `
+      <div class="loading">
+        Loading tools...
+      </div>
+      `;
+
+
+    try {
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from("tools")
+          .select("*")
+          .order("sort_order", {
+            ascending: true,
+            nullsFirst: false
+          })
+          .order("id", {
+            ascending: true
+          });
+
+
+      if (error) {
+
+        throw error;
+
+      }
+
+
+      if (
+        !data ||
+        data.length === 0
+      ) {
+
+        toolsList.innerHTML =
+          `
+          <div class="empty">
+            No tools found.
+          </div>
+          `;
+
+        currentTools = [];
+        return;
+
+      }
+
+      currentTools = data;
+
+      let html =
+        `<div class="tools-grid">`;
+
+
+      data.forEach((tool, index) => {
+
+        const position = index + 1;
+
+        html +=
+          `
+          <div class="tool-card">
+
+            <div class="position-badge">
+              Position ${position}
+            </div>
+
+            <h3>
+              ${escapeHtml(
+                tool.name || "Unnamed Tool"
+              )}
+            </h3>
+
+            <p>
+              ${escapeHtml(
+                tool.description || ""
+              )}
+            </p>
+
+            <div class="move-row">
+              <input
+                id="move-position-${tool.id}"
+                type="number"
+                min="1"
+                max="${data.length}"
+                value="${position}"
+                aria-label="Move tool to position"
+              >
+              <button
+                class="move-btn"
+                onclick="moveTool(${tool.id})"
+              >
+                Move
+              </button>
+            </div>
+
+            <div class="actions">
+
+              <button
+                class="edit-btn"
+                onclick="editTool(
+                  ${tool.id},
+                  '${escapeForJS(tool.name || "")}',
+                  '${escapeForJS(tool.description || "")}'
+                )"
+              >
+                Edit
+              </button>
+
+
+              <button
+                class="delete-btn"
+                onclick="deleteTool(
+                  ${tool.id}
+                )"
+              >
+                Delete
+              </button>
+
+            </div>
+
+          </div>
+          `;
+
+      });
+
+
+      html +=
+        `</div>`;
+
+
+      toolsList.innerHTML =
+        html;
+
+
+    } catch (error) {
+
+      console.error(error);
+
+
+      toolsList.innerHTML =
+        `
+        <div class="empty">
+          Error loading tools:
+          ${escapeHtml(error.message)}
+        </div>
+        `;
+
+    }
+
+  }
+
+
+  /* =====================================================
+     SAVE TOOL
+     ===================================================== */
+
+  async function saveTool() {
+
+    const editId =
+      document
+        .getElementById("editId")
+        .value;
+
+
+    const name =
+      document
+        .getElementById("toolName")
+        .value
+        .trim();
+
+
+    const description =
+      document
+        .getElementById("toolDescription")
+        .value
+        .trim();
+
+
+    const saveBtn =
+      document
+        .getElementById("saveBtn");
+
+
+    if (!name) {
+
+      alert(
+        "Please enter a tool name."
+      );
+
+      return;
+
+    }
+
+
+    saveBtn.disabled = true;
+
+
+    try {
+
+      if (editId) {
+
+        const {
+          error
+        } =
+          await supabaseClient
+            .from("tools")
+            .update({
+              name: name,
+              description: description
+            })
+            .eq(
+              "id",
+              editId
+            );
+
+
+        if (error) {
+
+          throw error;
+
+        }
+
+
+        alert(
+          "Tool updated successfully!"
+        );
+
+
+      } else {
+
+        const {
+          error
+        } =
+          await supabaseClient
+            .from("tools")
+            .insert([
+              {
+                name: name,
+                description: description,
+                sort_order: currentTools.length + 1
+              }
+            ]);
+
+
+        if (error) {
+
+          throw error;
+
+        }
+
+
+        alert(
+          "Tool added successfully!"
+        );
+
+      }
+
+
+      cancelEdit();
+
+      loadTools();
+
+
+    } catch (error) {
+
+      console.error(error);
+
+
+      alert(
+        error.message ||
+        "Something went wrong."
+      );
+
+    }
+
+
+    saveBtn.disabled = false;
+
+  }
+
+
+  /* =====================================================
+     MOVE TOOL TO ANY POSITION
+     ===================================================== */
+
+  async function moveTool(id) {
+
+    const input = document.getElementById(`move-position-${id}`);
+    let targetPosition = parseInt(input.value, 10);
+
+    if (!Number.isInteger(targetPosition)) {
+      alert("Enter a valid position.");
+      return;
+    }
+
+    targetPosition = Math.max(1, Math.min(targetPosition, currentTools.length));
+
+    const oldIndex = currentTools.findIndex(tool => tool.id === id);
+
+    if (oldIndex === -1) {
+      alert("Tool not found. Please reload the list.");
+      return;
+    }
+
+    const newIndex = targetPosition - 1;
+
+    if (oldIndex === newIndex) {
+      return;
+    }
+
+    const reordered = [...currentTools];
+    const [movedTool] = reordered.splice(oldIndex, 1);
+    reordered.splice(newIndex, 0, movedTool);
+
+    try {
+
+      for (let i = 0; i < reordered.length; i++) {
+
+        const { error } = await supabaseClient
+          .from("tools")
+          .update({ sort_order: i + 1 })
+          .eq("id", reordered[i].id);
+
+        if (error) {
+          throw error;
+        }
+
+      }
+
+      alert(`Tool moved to position ${targetPosition}.`);
+      await loadTools();
+
+    } catch (error) {
+
+      console.error(error);
+      alert(error.message || "Failed to move tool.");
+      await loadTools();
+
+    }
+
+  }
+
+
+  /* =====================================================
+     EDIT TOOL
+     ===================================================== */
+
+  function editTool(
+    id,
+    name,
+    description
+  ) {
+
+    document
+      .getElementById("editId")
+      .value =
+      id;
+
+
+    document
+      .getElementById("toolName")
+      .value =
+      name;
+
+
+    document
+      .getElementById("toolDescription")
+      .value =
+      description;
+
+
+    document
+      .getElementById("formTitle")
+      .innerText =
+      "Edit Tool";
+
+
+    document
+      .getElementById("saveBtn")
+      .innerText =
+      "Update Tool";
+
+
+    document
+      .getElementById("cancelBtn")
+      .classList
+      .remove("hidden");
+
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+
+  }
+
+
+  /* =====================================================
+     CANCEL EDIT
+     ===================================================== */
+
+  function cancelEdit() {
+
+    document
+      .getElementById("editId")
+      .value =
+      "";
+
+
+    document
+      .getElementById("toolName")
+      .value =
+      "";
+
+
+    document
+      .getElementById("toolDescription")
+      .value =
+      "";
+
+
+    document
+      .getElementById("formTitle")
+      .innerText =
+      "Add New Tool";
+
+
+    document
+      .getElementById("saveBtn")
+      .innerText =
+      "Add Tool";
+
+
+    document
+      .getElementById("cancelBtn")
+      .classList
+      .add("hidden");
+
+  }
+
+
+  /* =====================================================
+     DELETE TOOL
+     ===================================================== */
+
+  async function deleteTool(id) {
+
+    const confirmDelete =
+      confirm(
+        "Are you sure you want to delete this tool?"
+      );
+
+
+    if (!confirmDelete) {
+
+      return;
+
+    }
+
+
+    try {
+
+      const {
+        error
+      } =
+        await supabaseClient
+          .from("tools")
+          .delete()
+          .eq(
+            "id",
+            id
+          );
+
+
+      if (error) {
+
+        throw error;
+
+      }
+
+
+      alert(
+        "Tool deleted successfully!"
+      );
+
+
+      loadTools();
+
+
+    } catch (error) {
+
+      console.error(error);
+
+
+      alert(
+        error.message ||
+        "Failed to delete tool."
+      );
+
+    }
+
+  }
+
+
+  /* =====================================================
+     SAFE HTML
+     ===================================================== */
+
+  function escapeHtml(text) {
+
+    const div =
+      document.createElement("div");
+
+
+    div.innerText =
+      text;
+
+
+    return div.innerHTML;
+
+  }
+
+
+  function escapeForJS(text) {
+
+    return String(text)
+      .replace(/\\/g, "\\\\")
+      .replace(/'/g, "\\'")
+      .replace(/\n/g, "\\n")
+      .replace(/\r/g, "");
+
+  }
+
+</script>
+
+</body>
+</html>
