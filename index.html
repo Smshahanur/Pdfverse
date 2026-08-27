@@ -709,7 +709,6 @@ body.dark-mode footer{background:#05100F}
 <div class="tool-card" onclick="openTool('combineimages')"><div class="tool-icon">📚</div><h3>Combine PDF & Images</h3><p>Mix PDFs and images.</p></div>
 
 </div>
-<div class="tool-card" onclick="window.openSignatureValidator && window.openSignatureValidator()"><div class="tool-icon">🔐</div><h3>PDF Signature Validator</h3><p>Verify and check digital signatures in PDF files.</p></div>
 <div class="search-empty" id="searchEmpty">No PDF tool found. Try another keyword.</div>
 </section>
 
@@ -3443,6 +3442,70 @@ window.openUsefulTool=function(type){
 
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot,{once:true});
   else boot();
+})();
+</script>
+
+
+<script id="smloop-signature-single-card-guard">
+(function(){
+  const normalize=v=>String(v||'').trim().toLowerCase();
+
+  function signatureCards(){
+    return [...document.querySelectorAll('.tool-card')].filter(card =>
+      normalize(card.querySelector('h3')?.textContent) === 'pdf signature validator'
+    );
+  }
+
+  function keepExactlyOneSignatureCard(){
+    const pdfGrid=document.querySelector('#tools .tools-grid');
+    if(!pdfGrid) return;
+
+    const all=signatureCards();
+    let keep=all.find(card=>card.parentElement===pdfGrid);
+
+    if(!keep && all.length){
+      keep=all[0];
+      pdfGrid.appendChild(keep);
+    }
+
+    // Remove every duplicate and every validator card outside the PDF grid.
+    all.forEach(card=>{
+      if(card!==keep) card.remove();
+    });
+
+    if(keep){
+      keep.onclick=()=>{
+        if(typeof window.openSignatureValidator==='function'){
+          window.openSignatureValidator();
+        }
+      };
+    }
+  }
+
+  function run(){
+    keepExactlyOneSignatureCard();
+    requestAnimationFrame(keepExactlyOneSignatureCard);
+    setTimeout(keepExactlyOneSignatureCard,50);
+    setTimeout(keepExactlyOneSignatureCard,300);
+    setTimeout(keepExactlyOneSignatureCard,1000);
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',run);
+  }else{
+    run();
+  }
+
+  window.addEventListener('smloop-tools-synced',run);
+
+  const observer=new MutationObserver(()=>{
+    keepExactlyOneSignatureCard();
+  });
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    observer.observe(document.body,{childList:true,subtree:true});
+    run();
+  },{once:true});
 })();
 </script>
 
